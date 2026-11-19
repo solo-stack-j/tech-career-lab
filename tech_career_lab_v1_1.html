@@ -1,0 +1,2604 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tech Career Lab: Cyber, Data & IT Foundations (v1.1)</title>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+          },
+          colors: {
+            obsidian: {
+              bg: '#0B0D12',
+              card: '#131722',
+              border: '#1E2433',
+              text: '#F3F4F6',
+              muted: '#9CA3AF',
+            },
+            alabaster: {
+              bg: '#F8FAFC',
+              card: '#FFFFFF',
+              border: '#E2E8F0',
+              text: '#0F172A',
+              muted: '#475569',
+            },
+            cyber: '#8B5CF6',
+            itops: '#10B981',
+            data: '#F59E0B',
+            crimson: '#F43F5E',
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    /* Custom Theme Variables & 3D Flip Utilities */
+    :root {
+      --bg-primary: #F8FAFC;
+      --bg-card: #FFFFFF;
+      --bg-subcard: #F1F5F9;
+      --border-subtle: #E2E8F0;
+      --text-primary: #0F172A;
+      --text-muted: #475569;
+    }
+    html.dark {
+      --bg-primary: #0B0D12;
+      --bg-card: #131722;
+      --bg-subcard: #0F131D;
+      --border-subtle: #1E2433;
+      --text-primary: #F3F4F6;
+      --text-muted: #9CA3AF;
+    }
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    .theme-card {
+      background-color: var(--bg-card);
+      border-color: var(--border-subtle);
+      transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
+    }
+    .theme-subcard {
+      background-color: var(--bg-subcard);
+      border-color: var(--border-subtle);
+    }
+    .theme-border {
+      border-color: var(--border-subtle);
+    }
+    .theme-muted {
+      color: var(--text-muted);
+    }
+
+    /* 3D Flashcard Flip Mechanics */
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-card-inner.is-flipped {
+      transform: rotateY(180deg);
+    }
+    .flip-card-face {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+    .flip-card-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Custom Scrollbar for Logs & Terminal */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(139, 92, 246, 0.35);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(139, 92, 246, 0.6);
+    }
+  </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col selection:bg-cyber/30 selection:text-cyber">
+
+  <!-- Toast Notification Banner (Replaces alert()) -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- PERSISTENT HEADER & GLOBAL CONTROLS -->
+  <header class="sticky top-0 z-40 backdrop-blur-md border-b theme-border bg-alabaster-bg/90 dark:bg-obsidian-bg/90">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+        <!-- Brand Identity -->
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyber via-indigo-600 to-itops flex items-center justify-center shadow-lg shadow-cyber/20 text-white font-bold text-lg shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <h1 class="text-lg sm:text-xl font-extrabold tracking-tight">Tech Career Lab</h1>
+                <span class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-cyber/15 text-cyber border border-cyber/30">v1.1</span>
+              </div>
+              <p class="text-xs theme-muted">Practical Cyber, IT Ops &amp; Data Practice Hub</p>
+            </div>
+          </div>
+
+          <!-- Mobile Theme Toggle -->
+          <button onclick="toggleTheme()" aria-label="Toggle Light/Dark Theme" class="lg:hidden p-2.5 rounded-xl border theme-card hover:border-cyber/50 transition">
+            <span class="theme-icon-sun hidden dark:inline text-amber-400">☀️</span>
+            <span class="theme-icon-moon inline dark:hidden text-slate-700">🌙</span>
+          </button>
+        </div>
+
+        <!-- Live Telemetry, XP, Rank, Export & Theme Controls -->
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+          <!-- XP Counter -->
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl border theme-card text-xs sm:text-sm">
+            <span class="text-amber-500 font-bold">⚡ XP:</span>
+            <span id="header-xp" class="font-mono font-bold">0</span>
+            <span class="theme-muted text-xs">/ 4,650</span>
+          </div>
+
+          <!-- Rank Badge -->
+          <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border theme-card text-xs sm:text-sm">
+            <span class="w-2 h-2 rounded-full bg-itops animate-pulse"></span>
+            <span class="theme-muted hidden sm:inline">Rank:</span>
+            <span id="header-rank" class="font-semibold text-cyber">Tier 1 Trainee</span>
+          </div>
+
+          <!-- Completion Progress Counter -->
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl border theme-card text-xs sm:text-sm">
+            <span class="theme-muted">Completed:</span>
+            <span id="header-progress" class="font-mono font-bold text-itops">0/55</span>
+          </div>
+
+          <!-- Export Progress & Feedback Button -->
+          <button onclick="openExportModal()" class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-cyber hover:bg-violet-600 text-white font-semibold text-xs sm:text-sm shadow-md shadow-cyber/20 transition cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            <span>Export Progress &amp; Feedback</span>
+          </button>
+
+          <!-- Desktop Theme Toggle -->
+          <button onclick="toggleTheme()" title="Switch between Midnight Obsidian & Alabaster Daylight" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border theme-card hover:border-cyber/50 text-xs font-medium transition cursor-pointer">
+            <span class="dark:inline hidden">☀️ Daylight</span>
+            <span class="inline dark:hidden">🌙 Obsidian</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Global Track Filter Pills + 4 Main Navigation Tabs -->
+      <div class="mt-3 pt-3 border-t theme-border flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <!-- Global Track Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0" role="group" aria-label="Global Track Filter">
+          <span class="text-xs font-semibold uppercase tracking-wider theme-muted mr-1 shrink-0">Track:</span>
+          <button onclick="setTrackFilter('ALL')" data-track="ALL" class="track-pill px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 cursor-pointer">
+            All Tracks
+          </button>
+          <button onclick="setTrackFilter('CYBER')" data-track="CYBER" class="track-pill px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 cursor-pointer">
+            Cybersecurity [CYBER]
+          </button>
+          <button onclick="setTrackFilter('IT-OPS')" data-track="IT-OPS" class="track-pill px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 cursor-pointer">
+            IT Support &amp; Ops [IT-OPS]
+          </button>
+          <button onclick="setTrackFilter('DATA')" data-track="DATA" class="track-pill px-3 py-1.5 rounded-xl text-xs font-semibold transition shrink-0 cursor-pointer">
+            Data Analytics [DATA]
+          </button>
+        </div>
+
+        <!-- 4 Primary Streamlined Tabs -->
+        <nav class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0" role="tablist">
+          <button onclick="switchTab('labs')" id="tab-btn-labs" class="nav-tab px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition shrink-0 cursor-pointer flex items-center gap-1.5">
+            <span>🛡️ Incident &amp; Ticket Labs</span>
+            <span id="badge-count-labs" class="text-[11px] font-mono px-1.5 py-0.2 rounded-md bg-black/10 dark:bg-white/10">19</span>
+          </button>
+          <button onclick="switchTab('sandbox')" id="tab-btn-sandbox" class="nav-tab px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition shrink-0 cursor-pointer flex items-center gap-1.5">
+            <span>💻 CLI &amp; SQL Sandbox</span>
+            <span id="badge-count-sandbox" class="text-[11px] font-mono px-1.5 py-0.2 rounded-md bg-black/10 dark:bg-white/10">12</span>
+          </button>
+          <button onclick="switchTab('flashcards')" id="tab-btn-flashcards" class="nav-tab px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition shrink-0 cursor-pointer flex items-center gap-1.5">
+            <span>⚡ Flashcards &amp; Rapid Triage</span>
+            <span id="badge-count-flashcards" class="text-[11px] font-mono px-1.5 py-0.2 rounded-md bg-black/10 dark:bg-white/10">24</span>
+          </button>
+          <button onclick="switchTab('career')" id="tab-btn-career" class="nav-tab px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition shrink-0 cursor-pointer flex items-center gap-1.5">
+            <span>🎯 Course-to-Career Guide</span>
+            <span id="badge-count-career" class="text-[11px] font-mono px-1.5 py-0.2 rounded-md bg-black/10 dark:bg-white/10">19</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+
+    <!-- =================================================================== -->
+    <!-- TAB 1: INCIDENT & TICKET LABS (19 Multi-Stage 3-Step Scenarios)     -->
+    <!-- =================================================================== -->
+    <section id="view-labs" class="tab-view space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl border theme-card">
+        <div>
+          <h2 class="text-lg sm:text-xl font-bold flex items-center gap-2">
+            <span>Incident &amp; Ticket Labs</span>
+            <span class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-cyber/15 text-cyber border border-cyber/30">+150 XP / Lab</span>
+          </h2>
+          <p class="text-xs sm:text-sm theme-muted mt-1">
+            Work through realistic 3-stage enterprise tickets (Triage &rarr; Containment &rarr; Hardening). Use the 1-click <strong>Quick Field Guide</strong> inside each ticket for verified industry standards.
+          </p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button onclick="filterLabsStatus('ALL')" id="lab-status-all" class="px-3 py-1.5 rounded-xl text-xs font-semibold border theme-border bg-cyber text-white cursor-pointer">All</button>
+          <button onclick="filterLabsStatus('PENDING')" id="lab-status-pending" class="px-3 py-1.5 rounded-xl text-xs font-semibold border theme-border theme-card cursor-pointer">Remaining</button>
+          <button onclick="filterLabsStatus('DONE')" id="lab-status-done" class="px-3 py-1.5 rounded-xl text-xs font-semibold border theme-border theme-card cursor-pointer">Solved</button>
+        </div>
+      </div>
+
+      <!-- Scenario Cards Grid -->
+      <div id="labs-container" class="grid grid-cols-1 gap-6"></div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 2: CLI & SQL SANDBOX (12 Interactive Command & Query Drills)    -->
+    <!-- =================================================================== -->
+    <section id="view-sandbox" class="tab-view hidden space-y-6">
+      <div class="p-4 sm:p-5 rounded-2xl border theme-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-lg sm:text-xl font-bold flex items-center gap-2">
+            <span>CLI &amp; SQL Interactive Sandbox</span>
+            <span class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-itops/15 text-itops border border-itops/30">+100 XP / Challenge</span>
+          </h2>
+          <p class="text-xs sm:text-sm theme-muted mt-1">
+            Execute diagnostic Windows/Linux commands and SOC/Warehouse SQL queries in a simulated production shell. Use helper chips or type commands directly.
+          </p>
+        </div>
+        <div class="text-xs font-mono px-3 py-2 rounded-xl theme-subcard border theme-border">
+          Sandbox Solved: <span id="sandbox-solved-counter" class="font-bold text-itops">0 / 12</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Challenge Selector Sidebar -->
+        <div id="sandbox-list" class="lg:col-span-5 space-y-2.5 max-h-[720px] overflow-y-auto pr-1"></div>
+
+        <!-- Active Terminal & SQL Workbench -->
+        <div class="lg:col-span-7">
+          <div id="sandbox-workbench" class="rounded-2xl border theme-card p-5 sticky top-36 space-y-4">
+            <!-- Populated dynamically by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 3: FLASHCARDS & RAPID TRIAGE (24 Cards + Timed Quiz Mode)       -->
+    <!-- =================================================================== -->
+    <section id="view-flashcards" class="tab-view hidden space-y-6">
+      <div class="p-4 sm:p-5 rounded-2xl border theme-card flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-lg sm:text-xl font-bold flex items-center gap-2">
+            <span>Flashcards &amp; Rapid Triage</span>
+            <span class="text-xs font-mono px-2.5 py-0.5 rounded-full bg-data/15 text-data border border-data/30">+25 XP / Card</span>
+          </h2>
+          <p class="text-xs sm:text-sm theme-muted mt-1">
+            Master core concepts across all 19 modules with 3D flip decks or test your speed in Timed Rapid-Triage Quiz mode.
+          </p>
+        </div>
+
+        <!-- Mode Switcher -->
+        <div class="inline-flex rounded-xl p-1 border theme-border theme-subcard self-start sm:self-auto">
+          <button onclick="setFlashMode('DECK')" id="btn-mode-deck" class="px-4 py-1.5 rounded-lg text-xs font-bold bg-cyber text-white transition cursor-pointer">
+            🃏 Study Flashcards
+          </button>
+          <button onclick="setFlashMode('QUIZ')" id="btn-mode-quiz" class="px-4 py-1.5 rounded-lg text-xs font-bold theme-muted hover:text-cyber transition cursor-pointer">
+            ⏱️ Rapid-Triage Quiz
+          </button>
+        </div>
+      </div>
+
+      <!-- Mode A: 3D Flip Flashcard Deck -->
+      <div id="flash-deck-view" class="max-w-3xl mx-auto space-y-5">
+        <div class="flex items-center justify-between text-xs sm:text-sm">
+          <span id="flash-counter" class="font-mono font-semibold theme-muted">Card 1 of 24</span>
+          <div class="flex items-center gap-2">
+            <span id="flash-mastered-count" class="px-2.5 py-1 rounded-lg bg-itops/15 text-itops font-semibold text-xs">Mastered: 0/24</span>
+            <button onclick="shuffleFlashcards()" class="px-3 py-1 rounded-lg border theme-card hover:border-cyber text-xs font-semibold cursor-pointer">🔀 Shuffle</button>
+          </div>
+        </div>
+
+        <!-- 3D Card Stage -->
+        <div onclick="flipCard()" class="perspective-1000 h-80 sm:h-96 w-full cursor-pointer select-none">
+          <div id="flashcard-inner" class="flip-card-inner">
+            <!-- Front Face -->
+            <div class="flip-card-face rounded-2xl border-2 theme-card p-6 sm:p-8 flex flex-col justify-between shadow-xl">
+              <div class="flex items-center justify-between gap-2">
+                <span id="fc-front-badge" class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg bg-cyber/15 text-cyber">CYBER-01</span>
+                <span id="fc-front-framework" class="text-xs font-mono theme-muted">NIST / CIA Triad</span>
+              </div>
+              <div class="text-center my-auto px-2">
+                <span class="text-[11px] uppercase tracking-widest theme-muted block mb-2">Scenario / Concept Prompt</span>
+                <h3 id="fc-front-text" class="text-lg sm:text-2xl font-bold leading-snug">Loading...</h3>
+              </div>
+              <div class="flex items-center justify-between text-xs theme-muted pt-3 border-t theme-border">
+                <span>Click card to flip for verified answer</span>
+                <span id="fc-mastered-pill" class="hidden text-itops font-bold">✓ Mastered (+25 XP)</span>
+              </div>
+            </div>
+
+            <!-- Back Face -->
+            <div class="flip-card-face flip-card-back rounded-2xl border-2 border-cyber/60 theme-card p-6 sm:p-8 flex flex-col justify-between shadow-xl">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-mono font-bold text-cyber uppercase tracking-wider">Verified Operational Answer</span>
+                <span id="fc-back-badge" class="text-xs font-mono theme-muted">CYBER-01</span>
+              </div>
+              <div class="my-auto space-y-3 overflow-y-auto max-h-56 pr-1">
+                <p id="fc-back-answer" class="text-base sm:text-lg font-semibold leading-relaxed"></p>
+                <div id="fc-back-tip" class="p-3 rounded-xl theme-subcard border theme-border text-xs font-mono theme-muted"></div>
+              </div>
+              <div class="text-xs theme-muted pt-3 border-t theme-border flex justify-between items-center">
+                <span>Click card to flip back</span>
+                <span class="text-cyber font-semibold">Mark Mastered below to bank XP</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flashcard Navigation Controls -->
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <button onclick="prevCard()" class="px-4 py-2.5 rounded-xl border theme-card hover:border-cyber font-semibold text-xs sm:text-sm cursor-pointer">
+            &larr; Previous
+          </button>
+          <button onclick="toggleCardMastered()" id="btn-mark-mastered" class="px-5 py-2.5 rounded-xl bg-itops hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm shadow-md shadow-itops/20 cursor-pointer">
+            ✓ Mark Mastered (+25 XP)
+          </button>
+          <button onclick="nextCard()" class="px-4 py-2.5 rounded-xl border theme-card hover:border-cyber font-semibold text-xs sm:text-sm cursor-pointer">
+            Next &rarr;
+          </button>
+        </div>
+      </div>
+
+      <!-- Mode B: Timed Rapid-Triage Quiz -->
+      <div id="flash-quiz-view" class="hidden max-w-3xl mx-auto">
+        <div id="quiz-stage" class="rounded-2xl border theme-card p-6 sm:p-8 space-y-6">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 4: COURSE-TO-CAREER GUIDE (19 Modules -> Workplace & Resumes)   -->
+    <!-- =================================================================== -->
+    <section id="view-career" class="tab-view hidden space-y-6">
+      <div class="p-4 sm:p-5 rounded-2xl border theme-card flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-lg sm:text-xl font-bold">Course-to-Career Translation Guide</h2>
+          <p class="text-xs sm:text-sm theme-muted mt-1">
+            Translate classroom theory into workplace deliverables and copy ATS-ready resume bullet points for every mastered module.
+          </p>
+        </div>
+        <div class="relative w-full md:w-72">
+          <input id="career-search" oninput="renderCareerGuide()" type="text" placeholder="Search module, NIST, SQL, GPO..." class="w-full px-3.5 py-2 rounded-xl border theme-border theme-subcard text-xs sm:text-sm focus:outline-none focus:border-cyber" />
+        </div>
+      </div>
+
+      <div id="career-container" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t theme-border py-5 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs theme-muted">
+      <div>
+        <strong>Tech Career Lab (v1.1)</strong> &mdash; Cyber, Data &amp; IT Foundations Practice Hub. Zero external build dependencies.
+      </div>
+      <div class="flex items-center gap-4">
+        <span>Aligned with NIST SP 800-61, OWASP Top 10, MITRE ATT&amp;CK, Microsoft Learn, Kimball &amp; DAMA-DMBOK2</span>
+        <button id="reset-progress-btn" type="button" onclick="resetAllProgress()" class="text-crimson hover:underline font-semibold cursor-pointer">Reset Local Progress</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- EXPORT PROGRESS & FEEDBACK MODAL                                      -->
+  <!-- ===================================================================== -->
+  <div id="export-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+    <div class="w-full max-w-2xl rounded-2xl border theme-card p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b theme-border pb-3">
+        <div>
+          <h3 class="text-lg font-bold">Export Progress &amp; Instructor Feedback</h3>
+          <p class="text-xs theme-muted">Generate a timestamped completion report to submit or share with classmates.</p>
+        </div>
+        <button onclick="closeExportModal()" class="p-2 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 text-sm font-bold cursor-pointer">✕</button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-semibold mb-1">Student Name (Optional)</label>
+          <input id="export-student-name" oninput="updateExportPreview()" type="text" placeholder="e.g., Jordan Rivera" class="w-full px-3 py-2 rounded-xl border theme-border theme-subcard text-xs sm:text-sm focus:outline-none focus:border-cyber" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold mb-1">Course Section / Cohort (Optional)</label>
+          <input id="export-cohort" oninput="updateExportPreview()" type="text" placeholder="e.g., IT-Foundations Sec 02" class="w-full px-3 py-2 rounded-xl border theme-border theme-subcard text-xs sm:text-sm focus:outline-none focus:border-cyber" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold mb-1">Reflection / Lab Feedback Notes (Optional)</label>
+        <textarea id="export-notes" oninput="updateExportPreview()" rows="2" placeholder="Which lab was most challenging or helpful?" class="w-full px-3 py-2 rounded-xl border theme-border theme-subcard text-xs sm:text-sm focus:outline-none focus:border-cyber"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold mb-1">Generated `.txt` Report Preview</label>
+        <textarea id="export-preview-box" readonly rows="8" class="w-full p-3 rounded-xl border theme-border theme-subcard font-mono text-xs leading-relaxed focus:outline-none"></textarea>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-end gap-2.5 pt-2">
+        <button onclick="copyExportSummary()" class="px-4 py-2 rounded-xl border theme-card hover:border-cyber text-xs sm:text-sm font-semibold cursor-pointer">
+          📋 Copy to Clipboard
+        </button>
+        <button onclick="downloadExportTxt()" class="px-4 py-2 rounded-xl bg-cyber hover:bg-violet-600 text-white text-xs sm:text-sm font-semibold shadow-md shadow-cyber/20 cursor-pointer">
+          ⬇️ Download .txt Summary
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- COMPLETE APPLICATION DATA & INTERACTIVE ENGINE                        -->
+  <!-- ===================================================================== -->
+  <script>
+    // =========================================================================
+    // 1. DATASET: ALL 19 INCIDENT & TICKET LABS (9 CYBER, 5 IT-OPS, 5 DATA)
+    // =========================================================================
+    const LABS_DATA = [
+      {
+        id: "CYBER-01",
+        track: "CYBER",
+        module: "Module 01 • Security Foundations",
+        title: "Coffee Shop Threat Audit",
+        framework: "NIST SP 800-46 / CIA Triad",
+        xp: 150,
+        ticket: "A traveling account executive reports working on Q4 M&A spreadsheets over unencrypted public cafe Wi-Fi without a privacy screen or VPN. Nearby patrons had clear line-of-sight to the laptop display while HTTP traffic was visible on the open SSID. Assess the CIA Triad impact and remediate the remote workspace posture.",
+        telemetry: `[WLAN-TELEMETRY] SSID: "Cafe_Free_Guest" | Auth: Open (None) | Encryption: None
+[NET-CAPTURE] GET http://intranet-legacy.corp.local/deals/Q4_Merger.xlsx (Cleartext)
+[PHYSICAL-AUDIT] Display privacy filter: ABSENT | Screen auto-lock: 30 mins`,
+        fieldGuide: [
+          "Confidentiality breaks first when cleartext HTTP traffic or shoulder-surfing exposes sensitive records in public spaces.",
+          "Enforce an always-on IPsec/WireGuard corporate VPN with split-tunneling disabled on untrusted networks (NIST SP 800-46).",
+          "Pair technical controls with physical privacy filters and a strict 2-minute idle screen lock policy."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Which primary pillars of the CIA Triad are immediately compromised by shoulder surfing and unencrypted Wi-Fi sniffing?",
+            options: [
+              { text: "Confidentiality (cleartext interception & visual exposure) and potentially Integrity (MITM tampering)", correct: true, feedback: "Spot on! Open Wi-Fi allows passive sniffing and active MITM injection, while shoulder surfing directly violates Confidentiality." },
+              { text: "Availability only, because public Wi-Fi bandwidth is throttled", correct: false, feedback: "Incorrect. Slow bandwidth is a performance issue, whereas unencrypted traffic and screen visibility directly breach Confidentiality." },
+              { text: "Non-repudiation only, because the cafe router lacks Syslog", correct: false, feedback: "Incorrect. The primary risk to M&A spreadsheets here is unauthorized disclosure (Confidentiality)." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "What immediate action should the analyst instruct the executive to take while still off-site?",
+            options: [
+              { text: "Disconnect from the open SSID, enable the corporate VPN over a tethered cellular hotspot, and rotate session credentials", correct: true, feedback: "Correct! Moving to a cellular hotspot + encrypted VPN immediately stops local Wi-Fi sniffing and secures active sessions." },
+              { text: "Switch the browser to Incognito Mode and continue using the cafe Wi-Fi", correct: false, feedback: "Incognito Mode only prevents local browser history storage; it does not encrypt network packets over open Wi-Fi." },
+              { text: "Disable the Windows Defender Firewall so the VPN connects faster", correct: false, feedback: "Never disable host firewalls on untrusted public networks." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "Which enterprise control permanently prevents remote endpoints from transmitting cleartext traffic on untrusted networks?",
+            options: [
+              { text: "Enforce Always-On VPN via MDM, HSTS/HTTPS-only policy, 3M physical privacy screens, and 2-minute inactivity lock", correct: true, feedback: "Verified! Layered technical (Always-On VPN + HSTS) and physical (privacy filter) controls satisfy NIST SP 800-46." },
+              { text: "Ask employees to sign an annual memo promising not to visit coffee shops", correct: false, feedback: "Administrative policy alone without technical enforcement fails under real-world travel conditions." },
+              { text: "Block all outbound port 443 traffic on executive laptops", correct: false, feedback: "Blocking port 443 would break all legitimate HTTPS web applications." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "CYBER-02",
+        track: "CYBER",
+        module: "Module 02 • Identity & Phishing Defense",
+        title: "AiTM Phishing & Account Takeover Triage",
+        framework: "MITRE ATT&CK T1557 / FIDO2 WebAuthn",
+        xp: 150,
+        ticket: "SOC alerts triggered on an Impossible Travel sign-in for a Finance Director 4 minutes after they clicked a realistic DocuSign lure. The user entered their password and approved an SMS 6-digit OTP, yet the attacker still hijacked the active session. Triage the Adversary-in-the-Middle (AiTM) bypass and upgrade authentication.",
+        telemetry: `[ENTRA-SIGNIN] User: c.vance@corp.com | MFA: SMS_OTP_PASSED | IP: 185.220.101.4 (Frankfurt)
+[PROXY-LOG] Referrer: https://docusign-verify-auth[.]com/login (Evilginx2 reverse-proxy signature)
+[SESSION-AUDIT] Artifact: ESTSAUTHPERSISTENT session cookie replayed from foreign ASN`,
+        fieldGuide: [
+          "AiTM reverse-proxy toolkits (e.g., Evilginx) relay credentials AND capture valid session cookies, bypassing SMS/TOTP MFA.",
+          "Immediate containment requires revoking all active refresh/session tokens—not just resetting the user password.",
+          "Phishing-resistant FIDO2/WebAuthn Passkeys bind authentication cryptographically to the legitimate origin domain."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "How did the attacker bypass SMS 2FA without compromising the user's mobile phone?",
+            options: [
+              { text: "An AiTM reverse-proxy captured both the OTP and the resulting authenticated session cookie in real time", correct: true, feedback: "Exact match! AiTM proxies sit between the victim and identity provider, stealing the post-MFA session cookie." },
+              { text: "The attacker brute-forced the 6-digit SMS code offline using rainbow tables", correct: false, feedback: "SMS OTPs expire in minutes and cannot be cracked offline via rainbow tables." },
+              { text: "SMS messages are stored in plaintext inside the user's browser cache", correct: false, feedback: "Incorrect. The proxy intercepted the live HTTP session cookie after the user completed MFA." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "Why is a standard password reset alone insufficient during immediate containment?",
+            options: [
+              { text: "Stolen session cookies remain valid until explicitly revoked; you must revoke all refresh tokens and kill active sessions first", correct: true, feedback: "Critical catch! Always revoke active session/refresh tokens alongside resetting credentials and auditing inbox rules." },
+              { text: "Password resets take 72 hours to replicate across cloud identity providers", correct: false, feedback: "Cloud password updates are near-instant, but existing session tokens can persist unless explicitly revoked." },
+              { text: "Because the user's laptop BIOS must be reflashed before resetting passwords", correct: false, feedback: "BIOS reflashing is unrelated to cloud session cookie hijacking." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "Which authentication standard cryptographically defeats AiTM reverse-proxy phishing?",
+            options: [
+              { text: "FIDO2 / WebAuthn Passkeys (origin-bound cryptographic challenge-response) paired with Conditional Access token binding", correct: true, feedback: "Verified! WebAuthn verifies the exact TLS origin domain, refusing to sign challenges from lookalike proxy domains." },
+              { text: "Increasing SMS OTP codes from 6 digits to 8 digits", correct: false, feedback: "An AiTM proxy relays an 8-digit SMS code just as easily as a 6-digit code." },
+              { text: "Requiring users to change passwords every 30 days", correct: false, feedback: "Frequent password rotation does not stop real-time AiTM session proxying." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "CYBER-03",
+        track: "CYBER",
+        module: "Module 03 • Infrastructure & Legacy Risk",
+        title: "Legacy IIS 8.5 & Oracle DB Exposure",
+        framework: "NIST SP 800-53 / CISA BOD 22-01",
+        xp: 150,
+        ticket: "An external vulnerability scan flagged a customer portal running IIS 8.5 on End-of-Life Windows Server 2012 R2, directly connected to a backend Oracle Database over cleartext SQL*Net (TCP 1521). The web server still accepts TLS 1.0 and shares the same flat subnet as the database. Architect the isolation and encryption remediation.",
+        telemetry: `[QUALYS-SCAN] Host: 203.0.113.45 | OS: Windows Server 2012 R2 (EOL - No Security Patches)
+[SSL-PROBE] Supported Protocols: TLS 1.0 (WEAK), TLS 1.1 (WEAK), TLS 1.2
+[NETFLOW] 203.0.113.45:51422 -> 203.0.113.48:1521 (Oracle TNS unencrypted, same /24 VLAN)`,
+        fieldGuide: [
+          "End-of-Life (EOL) OS platforms receive zero vendor security patches and must be isolated behind a WAF/DMZ before migration.",
+          "Database tiers must never reside on a public-facing DMZ subnet; isolate them in a private internal tier with strict ACLs.",
+          "Deprecate TLS 1.0/1.1 in favor of TLS 1.2/1.3 and enforce Oracle Native Network Encryption (NNE) or TCPS (port 2484)."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "What combination of architectural flaws creates the highest likelihood of full database compromise?",
+            options: [
+              { text: "Unpatched EOL Windows Server 2012 R2 exposed directly to the internet on the same flat subnet as an unencrypted Oracle DB", correct: true, feedback: "Correct! RCE on the unpatched IIS 8.5 host gives an attacker direct Layer 2/3 access and packet-sniffing capability against Oracle." },
+              { text: "IIS 8.5 uses too much RAM when TLS 1.2 is enabled", correct: false, feedback: "Memory usage is not the security flaw; unpatched EOL software and flat network segmentation are." },
+              { text: "Oracle DB port 1521 conflicts with standard DNS UDP port 53", correct: false, feedback: "Those ports do not conflict; the issue is cleartext database traffic on a flat network." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "Before the application team completes OS migration, how do you immediately reduce attack surface?",
+            options: [
+              { text: "Place a Web Application Firewall (WAF) with virtual patching in front of IIS, disable TLS 1.0/1.1, and restrict port 1521 via host firewall", correct: true, feedback: "Great containment! Virtual patching via WAF shields EOL vulnerabilities while ACLs lock down DB access." },
+              { text: "Install a free desktop antivirus on the Oracle database server", correct: false, feedback: "Consumer AV will not stop network exploitation of an unpatched EOL web server or cleartext TNS traffic." },
+              { text: "Change the IIS port from 443 to 8443 without adding firewall rules", correct: false, feedback: "Security through obscurity does not protect against automated port scanners." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "What is the target three-tier architecture and cryptographic posture?",
+            options: [
+              { text: "Migrate to a supported OS in a DMZ, move Oracle DB to an isolated private subnet behind an internal firewall, and enforce TLS 1.3 + Oracle TCPS", correct: true, feedback: "Verified! Proper DMZ segmentation, supported OS patching, and end-to-end encryption eliminate the exposure." },
+              { text: "Keep Windows Server 2012 R2 but rename the local Administrator account", correct: false, feedback: "Renaming accounts does not remediate unpatched kernel or IIS vulnerabilities." },
+              { text: "Expose Oracle port 1521 directly to the internet so developers can query it easily", correct: false, feedback: "Exposing a database directly to the internet is a critical security violation." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "CYBER-04",
+        track: "CYBER",
+        module: "Module 04 • Reconnaissance & OSINT",
+        title: "OSINT Footprint & RHEL 5.8 Leak",
+        framework: "PTES / MITRE ATT&CK T1592 / NVD",
+        xp: 150,
+        ticket: "During an authorized external security assessment, passive OSINT via Shodan and certificate transparency logs reveals a forgotten staging subdomain (`dev-erp.corp.com`) advertising `Apache/2.2.3 (Red Hat Enterprise Linux 5.8)` and an exposed `.git/config` directory. Determine the proper engagement boundary and remediation.",
+        telemetry: `[SHODAN-PASSIVE] IP: 198.51.100.77 | Banner: Server: Apache/2.2.3 (Red Hat) PHP/5.1.6
+[CT-LOG] SAN: dev-erp.corp.com (Expired cert issued 2016)
+[HTTP-HEAD] GET https://dev-erp.corp.com/.git/HEAD -> 200 OK ("ref: refs/heads/master")`,
+        fieldGuide: [
+          "Passive OSINT (Shodan, CT logs, WHOIS) queries third-party repositories without sending packets to client infrastructure.",
+          "Active exploitation or invasive scanning outside explicit Rules of Engagement (RoE) is unauthorized; report critical leaks immediately.",
+          "Cross-reference leaked banners against NVD CVEs, purge `.git` metadata from web roots, and decommission shadow staging hosts."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Why is finding RHEL 5.8 / Apache 2.2.3 via Shodan classified as passive OSINT, and what is the primary risk?",
+            options: [
+              { text: "It queries third-party cached banners without touching target servers; RHEL 5.8 has dozens of critical NVD CVEs and exposed .git source code", correct: true, feedback: "Spot on! Passive recon leaves zero packets on the target while revealing severely outdated software and source code exposure." },
+              { text: "Shodan launches automated SQL injection payloads against the server", correct: false, feedback: "Shodan indexes service banners; querying Shodan is passive reconnaissance." },
+              { text: "RHEL 5.8 is a modern rolling-release OS with no known vulnerabilities", correct: false, feedback: "RHEL 5 reached End of Life in 2017 and carries numerous critical vulnerabilities." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "Under strict Penetration Testing Rules of Engagement (RoE), what should you do upon seeing the exposed `.git/HEAD`?",
+            options: [
+              { text: "Do NOT dump proprietary source code; document the HTTP 200 evidence and notify the client emergency contact to take the shadow host offline", correct: true, feedback: "Professional and compliant! Never exceed RoE boundaries when discovering live exposures." },
+              { text: "Download the entire `.git` repository and post snippets on social media to prove impact", correct: false, feedback: "Exfiltrating and disclosing client source code violates confidentiality and legal RoE." },
+              { text: "Launch a denial-of-service flood to crash the Apache 2.2.3 server", correct: false, feedback: "Unauthorized DoS attacks are destructive and violate standard RoE." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "How should the organization prevent shadow staging servers and `.git` leaks permanently?",
+            options: [
+              { text: "Implement Attack Surface Management (ASM) inventorying DNS/CT logs, block dot-files (`/.git`) in web server configs, and automate CI/CD artifact builds", correct: true, feedback: "Verified! Continuous ASM monitoring plus clean build artifacts eliminate forgotten staging leaks." },
+              { text: "Set `chmod 777` on the `.git` folder so only root can read it", correct: false, feedback: "`chmod 777` grants read/write/execute to everyone, making the exposure worse." },
+              { text: "Delete all DNS A records manually once every two years", correct: false, feedback: "Biennial manual audits are far too slow for modern cloud/DNS sprawl." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "CYBER-05",
+        track: "CYBER",
+        module: "Module 05 • Network Security Architecture",
+        title: "NGFW vs. Stateless Firewall Policy",
+        framework: "NIST SP 800-41 / OSI Model Layers 3-7",
+        xp: 150,
+        ticket: "Malware command-and-control (C2) beacons were discovered leaving the corporate workstation VLAN over TCP port 443. The perimeter stateless packet filter allowed the traffic because outbound TCP 443 is permitted for web browsing, even though the payload was non-TLS raw binary C2 traffic. Upgrade the inspection architecture.",
+        telemetry: `[STATELESS-ACL] PERMIT TCP 10.20.4.88:49812 -> 45.33.19.102:443 (Port-based match)
+[PCAP-INSPECT] TCP 443 Payload: 0xDEADBEEF 0x0041434B (No TLS ClientHello handshake!)
+[NGFW-APPID] Detected Application: unknown-tcp / CobaltStrike-Beacon over port 443`,
+        fieldGuide: [
+          "Stateless packet filters inspect only Layer 3/4 headers (IP, port, protocol) per packet without tracking connection state.",
+          "Next-Generation Firewalls (NGFW) perform stateful tracking + Layer 7 Deep Packet Inspection (DPI / App-ID) and TLS decryption.",
+          "Enforcing App-ID (allowing only valid `ssl`/`web-browsing` on port 443) blocks port-masquerading C2 tunnels."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Why did the legacy stateless firewall fail to block the C2 beacon on TCP port 443?",
+            options: [
+              { text: "Stateless firewalls only evaluate Layer 3/4 IP and port headers and cannot inspect Layer 7 application payloads", correct: true, feedback: "Correct! Attackers routinely tunnel C2 over TCP 80/443 to bypass port-only Layer 4 ACLs." },
+              { text: "TCP port 443 is reserved exclusively for ICMP ping packets", correct: false, feedback: "TCP 443 is standard HTTPS, not ICMP." },
+              { text: "Stateless firewalls automatically decrypt all AES-256 traffic by default", correct: false, feedback: "Stateless packet filters do not perform TLS decryption or Layer 7 inspection." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "What immediate firewall and EDR containment steps stop the active C2 channel?",
+            options: [
+              { text: "Sinkhole/block destination IP 45.33.19.102 at the perimeter, quarantine host 10.20.4.88 via EDR, and kill the malicious PID", correct: true, feedback: "Solid containment! Blocking the C2 indicator and isolating the host stops lateral movement immediately." },
+              { text: "Block all outbound TCP port 443 traffic for the entire company permanently", correct: false, feedback: "Blocking all outbound 443 would break all SaaS and HTTPS connectivity across the enterprise." },
+              { text: "Switch the firewall rule from TCP to UDP on port 443", correct: false, feedback: "Changing TCP to UDP does not address the infected workstation or TCP C2 traffic." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "How do you configure an NGFW to prevent non-HTTPS applications from abusing port 443 in the future?",
+            options: [
+              { text: "Enforce Layer 7 App-ID policies permitting only verified `ssl`/`web-browsing` on 443, enable IPS signatures, and deploy TLS inspection", correct: true, feedback: "Verified! NGFW App-ID + IPS + TLS decryption stops protocol masquerading at OSI Layer 7." },
+              { text: "Convert the NGFW back into a stateless router ACL to improve throughput", correct: false, feedback: "Downgrading to stateless ACLs removes Layer 7 visibility." },
+              { text: "Allow any traffic as long as the source port is above 1024", correct: false, feedback: "Ephemeral client source ports are always above 1024; that rule would permit everything." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "CYBER-06",
+        track: "CYBER",
+        module: "Module 06 • Digital Forensics & Chain of Custody",
+        title: "Forensic Lab Evidence Contamination",
+        framework: "NIST SP 800-86 / SWGDE / RFC 3227",
+        xp: 150,
+        ticket: "A junior technician seized a suspect workstation SSD and plugged it directly into a Windows desktop connected to the corporate LAN to browse user folders, altering 142 file `LastAccessed` timestamps. Worse, the lab workbench was bridged to the production network. Restore forensic integrity and lab isolation.",
+        telemetry: `[FORENSIC-AUDIT] Drive: /dev/nvme0n1 | Hardware Write-Blocker: BYPASSED
+[MFT-TIMELINE] 142 files in C:\\Users\\jdoe\\Documents modified/accessed post-seizure
+[SWITCH-PORT] Lab Bench Port Gi1/0/24 -> VLAN 10 (Corporate Production LAN)`,
+        fieldGuide: [
+          "Order of Volatility (RFC 3227): Capture CPU registers/RAM before powering off or imaging non-volatile SSD storage.",
+          "Always attach seized drives through a hardware write-blocker and compute SHA-256 hashes immediately before & after imaging.",
+          "Isolate forensic analysis networks on an air-gapped or strictly firewalled VLAN with zero route to corporate production."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Why is mounting a suspect drive directly on a live Windows workstation a critical forensic failure?",
+            options: [
+              { text: "The OS mounts the filesystem read-write, altering MACB timestamps/metadata and invalidating cryptographic hash repeatability", correct: true, feedback: "Exact! Mounting read-write modifies filesystem metadata and compromises courtroom admissibility." },
+              { text: "Windows automatically formats any NVMe drive plugged into a USB adapter", correct: false, feedback: "Windows does not auto-format readable NTFS drives, but it does write metadata/thumbnails/index entries." },
+              { text: "Hardware write-blockers only work on floppy disks and CD-ROMs", correct: false, feedback: "Modern hardware write-blockers support SATA, NVMe, SAS, and USB storage." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "What must the forensic lead do immediately to preserve the remaining evidentiary value and protect the network?",
+            options: [
+              { text: "Disconnect the drive, document the inadvertent mount in the Chain of Custody log, re-attach via hardware write-blocker, and hash with SHA-256", correct: true, feedback: "Correct! Transparent documentation in the Chain of Custody plus immediate write-blocked SHA-256 imaging preserves integrity." },
+              { text: "Manually edit the 142 timestamps back to their original dates using a hex editor", correct: false, feedback: "Never alter evidence manually; that constitutes spoliation/tampering." },
+              { text: "Delete the Chain of Custody form and start a new one hiding the technician's action", correct: false, feedback: "Falsifying Chain of Custody logs destroys legal credibility." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "How should the forensic lab environment be architected to prevent future cross-contamination?",
+            options: [
+              { text: "Enforce mandatory hardware write-blockers, dual-hash verification (`sha256sum`), and place lab benches on an air-gapped/isolated VLAN", correct: true, feedback: "Verified! Hardware write-blocking, SHA-256 validation, and physical/VLAN isolation meet NIST SP 800-86 standards." },
+              { text: "Use MD5 hashes over shared Wi-Fi to store forensic images on public cloud drives", correct: false, feedback: "MD5 is collision-vulnerable and forensic images must never traverse unencrypted public networks." },
+              { text: "Analyze live malware samples directly on the corporate domain controller", correct: false, feedback: "Never run malware on production infrastructure." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "CYBER-07",
+        track: "CYBER",
+        module: "Module 07 • Insider Threat & IAM Lifecycle",
+        title: "Terminated Contractor Insider Threat",
+        framework: "NIST SP 800-53 AC-2 / Cyber Kill Chain",
+        xp: 150,
+        ticket: "HR terminated a DevOps contractor on Friday at 17:00, but their personal SSH key and AWS IAM access keys remained active over the weekend. At 02:14 Sunday, automated alerts detected `aws s3 sync` downloading 48 GB of customer exports from an S3 bucket. Contain the exfiltration and fix IAM offboarding.",
+        telemetry: `[CLOUDTRAIL] Event: GetObject (x14,200) | Principal: arn:aws:iam::112233445566:user/dev-contractor04
+[S3-ACCESS] Bucket: corp-prod-customer-exports | BytesTransferred: 51,539,607,552 (48 GB)
+[HR-SYNC] Termination timestamp: Friday 17:00 UTC | IAM Key Status: ACTIVE`,
+        fieldGuide: [
+          "Data exfiltration sits at the final 'Actions on Objectives' phase of the Lockheed Martin Cyber Kill Chain.",
+          "Containment must revoke long-lived static credentials (AWS IAM keys, SSH authorized_keys, OAuth tokens), not just SSO passwords.",
+          "Automate Joiner-Mover-Leaver (JML) offboarding via HR-to-IdP SCIM webhooks and replace static keys with short-lived STS roles."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Which Cyber Kill Chain stage does the Sunday 02:14 `aws s3 sync` activity represent, and why did SSO deactivation fail to stop it?",
+            options: [
+              { text: "Actions on Objectives (Exfiltration); static AWS IAM access keys bypass SSO web login and stay valid until explicitly deleted", correct: true, feedback: "Spot on! Static API keys and SSH keys operate independently of web SSO passwords." },
+              { text: "Weaponization; the contractor was still compiling source code", correct: false, feedback: "Weaponization happens before delivery; downloading 48 GB of production data is Actions on Objectives." },
+              { text: "Reconnaissance; `aws s3 sync` only lists bucket names without downloading files", correct: false, feedback: "`aws s3 sync` actively downloads objects (48 GB transferred)." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "What is the fastest containment sequence to halt ongoing cloud exfiltration?",
+            options: [
+              { text: "Deactivate/delete the IAM access keys, attach an explicit Deny-All IAM policy, revoke active STS sessions, and preserve CloudTrail logs", correct: true, feedback: "Exact! An explicit Deny policy + key deletion terminates active API calls immediately while preserving forensic CloudTrail evidence." },
+              { text: "Send an email to the former contractor asking them to delete the downloaded files", correct: false, feedback: "Relying on voluntary compliance from an unauthorized actor does not contain the breach." },
+              { text: "Delete the entire production S3 bucket so nobody can read it", correct: false, feedback: "Deleting production buckets causes self-inflicted data loss and availability outage." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "How do you eliminate orphaned contractor access across cloud and Linux infrastructure permanently?",
+            options: [
+              { text: "Eliminate static IAM/SSH keys in favor of SSO-federated short-lived STS tokens and trigger automated SCIM deprovisioning from HRIS termination events", correct: true, feedback: "Verified! Short-lived federated credentials + automated HR-driven SCIM revocation enforce Zero-Trust lifecycle management." },
+              { text: "Audit contractor accounts manually once per quarter using a spreadsheet", correct: false, feedback: "Quarterly manual audits leave up to 90 days of exposure after termination." },
+              { text: "Share a single root AWS account among all contractors to simplify tracking", correct: false, feedback: "Shared root accounts destroy individual accountability and violate least privilege." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "CYBER-08",
+        track: "CYBER",
+        module: "Module 08 • Incident Response & Ransomware",
+        title: "Ransomware Containment & Volatile Memory Triage",
+        framework: "NIST SP 800-61 Rev. 2",
+        xp: 150,
+        ticket: "At 03:12 AM, EDR triggers a high-severity alert on `FIN-APP-02`: a compromised service account (`svc_backup`) is executing rapid SMB file encryption and attempting to delete Volume Shadow Copies (`vssadmin delete shadows`). The server is still powered on with potential encryption keys in RAM. Execute NIST SP 800-61 response.",
+        telemetry: `[EDR-ALERT] Host: FIN-APP-02 (10.10.30.14) | User: CORP\\svc_backup
+[PROC-TREE] cmd.exe -> vssadmin.exe delete shadows /all /quiet -> locker64.exe --threads 16
+[SMB-BURST] 1,420 files renamed to *.locked in 18 seconds across \\\\FIN-NAS01\\Shared`,
+        fieldGuide: [
+          "NIST SP 800-61 Lifecycle: Preparation -> Detection & Analysis -> Containment, Eradication & Recovery -> Post-Incident Activity.",
+          "NEVER hard-reboot an actively encrypting server first—pulling the plug wipes volatile RAM where decryption keys/process artifacts reside.",
+          "Use EDR Network Quarantine (keeping the EDR management channel alive), disable `svc_backup`, capture RAM, and restore from immutable backups."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Why is `locker64.exe` invoking `vssadmin delete shadows /all /quiet` under `CORP\\svc_backup`?",
+            options: [
+              { text: "To destroy local Windows Volume Shadow Copy recovery points while leveraging over-privileged backup service credentials across SMB shares", correct: true, feedback: "Correct! Ransomware targets VSS first to prevent quick rollback and abuses privileged backup accounts for lateral SMB encryption." },
+              { text: "To defragment the NAS hard drives and optimize nightly backup compression", correct: false, feedback: "Deleting shadow copies and renaming files to `.locked` is destructive ransomware behavior." },
+              { text: "Because Windows Update automatically deletes shadow copies at 3:00 AM", correct: false, feedback: "Windows Update does not execute `locker64.exe` or encrypt network shares." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "Per NIST SP 800-61 and volatile forensics rules, what is the optimal immediate containment action on `FIN-APP-02`?",
+            options: [
+              { text: "Trigger EDR Network Quarantine (isolating SMB/LAN while keeping EDR telemetry alive), disable `svc_backup` in AD, and dump RAM before shutdown", correct: true, feedback: "Textbook NIST SP 800-61 response! Network containment stops lateral SMB spread while preserving volatile RAM evidence." },
+              { text: "Immediately pull the physical power cord from `FIN-APP-02` to wipe RAM", correct: false, feedback: "Pulling power destroys volatile memory artifacts and potential in-memory encryption keys." },
+              { text: "Pay the ransom demand immediately before checking backup integrity", correct: false, feedback: "Paying ransom is never an immediate containment step and provides no guarantee of recovery." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "Which combination of controls ensures clean Eradication, Recovery, and future ransomware resilience?",
+            options: [
+              { text: "Rebuild `FIN-APP-02` from golden image, restore clean data from offline/immutable Object-Lock backups, and enforce Tier-0 Privileged Access & SMB signing", correct: true, feedback: "Verified! Rebuilding compromised hosts, restoring from immutable backups, and segmenting service accounts close the incident cleanly." },
+              { text: "Simply rename the `.locked` files back to `.xlsx` and re-enable `svc_backup`", correct: false, feedback: "Renaming encrypted files does not decrypt ciphertext, and re-enabling a compromised account invites immediate re-infection." },
+              { text: "Grant `svc_backup` Domain Admin privileges so it can monitor all servers", correct: false, feedback: "Increasing privileges violates Least Privilege and worsens future blast radius." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "CYBER-09",
+        track: "CYBER",
+        module: "Module 09 • Application & API Security",
+        title: "API Broken Object Level Authorization (IDOR)",
+        framework: "OWASP API Top 10 (API1:2023) / ASVS",
+        xp: 150,
+        ticket: "A bug bounty researcher reported that any authenticated customer can download another customer's PDF tax invoice simply by incrementing the sequential integer in `GET /api/v1/invoices?user_id=1042` to `1043`. API gateway logs confirm 200 OK responses across 800 sequential IDs. Remediate the BOLA/IDOR flaw.",
+        telemetry: `[API-GW] GET /api/v1/invoices?user_id=1043 HTTP/1.1 | Auth-Sub: user_1042 | Status: 200 OK
+[API-GW] GET /api/v1/invoices?user_id=1044 HTTP/1.1 | Auth-Sub: user_1042 | Status: 200 OK
+[CODE-REVIEW] SELECT * FROM invoices WHERE user_id = req.query.user_id; // No session owner check!`,
+        fieldGuide: [
+          "OWASP API1:2023 Broken Object Level Authorization (BOLA / IDOR) occurs when an API trusts client-supplied object IDs without checking ownership.",
+          "Never rely on client-provided `user_id` query parameters for authorization; derive identity strictly from the verified server-side JWT/session token.",
+          "Replace predictable sequential integers (`1042, 1043`) with non-guessable UUIDv4 identifiers AND enforce server-side RBAC/ABAC ownership checks."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Which OWASP Top 10 vulnerability allows `user_1042` to read `user_1043`'s invoice?",
+            options: [
+              { text: "Broken Object Level Authorization (BOLA / IDOR) — the backend queries the database using an unvalidated client-supplied ID", correct: true, feedback: "Correct! Authentication succeeded (valid JWT), but object-level authorization failed." },
+              { text: "Cross-Site Scripting (XSS) in the PDF rendering engine", correct: false, feedback: "XSS executes scripts in a victim's browser; this is unauthorized direct object access." },
+              { text: "Server-Side Request Forgery (SSRF) against internal AWS metadata", correct: false, feedback: "SSRF tricks a server into making outbound requests, whereas IDOR exposes unauthorized records via manipulated IDs." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "What immediate API gateway and code-level hotfix stops ongoing enumeration?",
+            options: [
+              { text: "Enforce server-side ownership validation (`WHERE invoice_id = ? AND owner_id = session.userId`), enable API rate-limiting, and revoke scraped sessions", correct: true, feedback: "Spot on! Server-side session ownership checks immediately close the authorization bypass." },
+              { text: "Hide the `user_id` parameter in the frontend React UI while leaving the API endpoint unchanged", correct: false, feedback: "Hiding UI fields does nothing against attackers calling the API directly via curl or Burp Suite." },
+              { text: "Base64-encode the sequential integers (`MTA0Mw==`) so users cannot read them", correct: false, feedback: "Base64 is trivial encoding, not encryption or authorization." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "What architectural pattern prevents BOLA/IDOR vulnerabilities across all microservices?",
+            options: [
+              { text: "Derive user identity exclusively from signed server-side JWT claims, adopt UUIDv4 resource keys, and add automated BOLA integration tests in CI/CD", correct: true, feedback: "Verified! Centralized authorization middleware + UUIDs + automated negative auth tests prevent regression." },
+              { text: "Disable HTTPS so the WAF can inspect query parameters in cleartext", correct: false, feedback: "Disabling HTTPS exposes all credentials and invoices to network sniffing." },
+              { text: "Require customers to memorize 32-digit invoice numbers and type them manually", correct: false, feedback: "Poor UX and still vulnerable without server-side ownership enforcement." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "IT-OPS-01",
+        track: "IT-OPS",
+        module: "Module 10 • Active Directory & Branch Infrastructure",
+        title: "Branch Office RODC Architecture",
+        framework: "Microsoft Learn • AD DS RODC & PRP",
+        xp: 150,
+        ticket: "A remote warehouse branch with low physical security needs local Active Directory authentication so staff can log in during WAN outages. However, corporate security forbids caching Domain Admin credentials on the branch server, and local warehouse supervisors are struggling to log in after a WAN drop. Configure the RODC and Password Replication Policy (PRP).",
+        telemetry: `[DC-DIAG] Site: Branch-Warehouse-04 | Server: RODC-WH04 (Read-Only Domain Controller)
+[EVENT-ID 4625] User: CORP\\wh-supervisor01 | Failure: WAN link down; credentials not cached on RODC
+[PRP-AUDIT] Allowed PRP Group: Empty | Denied PRP Group: Domain Admins, Enterprise Admins`,
+        fieldGuide: [
+          "A Read-Only Domain Controller (RODC) hosts a read-only copy of the AD database (NTDS.dit) and caches zero passwords by default.",
+          "The Password Replication Policy (PRP) uses an 'Allowed' list (branch users/computers) and a 'Denied' list (Domain Admins/Tier-0 accounts).",
+          "Role separation allows delegating local RODC server maintenance to a branch technician without granting Domain Admin rights."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Why could `wh-supervisor01` not authenticate during the WAN outage even though `RODC-WH04` was online?",
+            options: [
+              { text: "By default, an RODC caches NO user passwords until the user's security group is added to the Allowed Password Replication Policy (PRP)", correct: true, feedback: "Exact! Zero-credential-caching by default is a core security feature of an RODC." },
+              { text: "An RODC can only authenticate Linux workstations, not Windows clients", correct: false, feedback: "RODCs authenticate standard domain-joined Windows clients via Kerberos/NTLM." },
+              { text: "Read-Only Domain Controllers automatically shut down whenever WAN latency exceeds 50ms", correct: false, feedback: "RODCs are specifically designed to survive WAN outages once branch credentials are cached." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "How do you safely enable local branch authentication while keeping Domain Admin hashes off `RODC-WH04`?",
+            options: [
+              { text: "Add only the `Branch-WH04-Users` security group to the RODC Allowed PRP list, keep Tier-0/Admins in Denied PRP, and prepopulate branch passwords", correct: true, feedback: "Correct! Prepopulating only branch user credentials enables offline WAN survival without exposing privileged hashes." },
+              { text: "Promote `RODC-WH04` to a full writable Domain Controller inside the unlocked warehouse closet", correct: false, feedback: "Placing a writable DC in an insecure physical location risks full domain compromise if stolen." },
+              { text: "Add `Domain Admins` to the Allowed PRP list so administrators can log in locally", correct: false, feedback: "Never cache Domain Admin credentials on an RODC." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "If `RODC-WH04` is physically stolen from the branch office, what is the standard AD DS recovery procedure?",
+            options: [
+              { text: "Reset passwords for ONLY the specific accounts listed in the RODC's 'Revealed Credentials' cache and reset the RODC krbtgt_XXXXX account", correct: true, feedback: "Verified! Because the RODC tracks exact revealed accounts and uses its own unique `krbtgt` key, blast radius is strictly bounded." },
+              { text: "Force a password reset for every single user across the entire global enterprise", correct: false, feedback: "Only accounts cached on that specific RODC need password resets." },
+              { text: "Do nothing, because BitLocker makes password rotation unnecessary", correct: false, feedback: "Defense-in-depth requires resetting cached credentials and the RODC krbtgt account upon physical theft." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "IT-OPS-02",
+        track: "IT-OPS",
+        module: "Module 11 • Group Policy & Internal PKI",
+        title: "GPO Inheritance & Internal PKI Trust",
+        framework: "Microsoft Learn • AD DS GPO & AD CS",
+        xp: 150,
+        ticket: "Workstations in the newly created `OU=Engineering` display `NET::ERR_CERT_AUTHORITY_INVALID` warnings when browsing internal HTTPS apps signed by the corporate AD CS Root CA. Running `gpresult /r` shows the `Corp-Root-CA-Trust` GPO is missing from Applied Group Policy Objects. Diagnose the LSDOU precedence and PKI chain.",
+        telemetry: `[CMD] C:\\> gpresult /r /scope computer
+[GPO-APPLIED] Local Group Policy, Default Domain Policy
+[GPO-DENIED]  Corp-Root-CA-Trust (Reason: Block Inheritance enabled on OU=Engineering)`,
+        fieldGuide: [
+          "GPO processing follows LSDOU precedence: Local -> Site -> Domain -> Organizational Unit (later policies overwrite earlier ones).",
+          "'Block Inheritance' on a child OU blocks non-enforced parent Domain/Site GPOs, including Root CA certificate distribution.",
+          "Setting a critical baseline GPO to 'Enforced' (No Override) or linking it directly ensures trusted root certificates deploy everywhere."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Why are Engineering workstations failing TLS certificate validation against internal corporate servers?",
+            options: [
+              { text: "'Block Inheritance' on `OU=Engineering` prevented the Domain-level `Corp-Root-CA-Trust` GPO from installing the internal Root CA certificate", correct: true, feedback: "Spot on! Without the internal Root CA in the Trusted Root Certification Authorities store, browsers reject internal certs." },
+              { text: "The internal web servers are using expired public Let's Encrypt certificates", correct: false, feedback: "The telemetry explicitly shows `Corp-Root-CA-Trust` was blocked by inheritance on the Engineering OU." },
+              { text: "TLS certificates cannot be distributed via Group Policy in Active Directory", correct: false, feedback: "Computer Configuration -> Windows Settings -> Security Settings -> Public Key Policies is the standard GPO delivery method." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "What is the cleanest immediate fix in Group Policy Management Console (GPMC) without removing legitimate OU customizations?",
+            options: [
+              { text: "Mark the Domain-linked `Corp-Root-CA-Trust` baseline GPO as 'Enforced' (No Override) and run `gpupdate /force` on Engineering endpoints", correct: true, feedback: "Exact! 'Enforced' overrides 'Block Inheritance' for mandatory security baselines while preserving other OU settings." },
+              { text: "Instruct all engineers to click 'Proceed to site (unsafe)' in Chrome every morning", correct: false, feedback: "Training users to bypass TLS warnings creates dangerous phishing habits." },
+              { text: "Move all Engineering computers into the default `CN=Computers` container", correct: false, feedback: "Moving computers out of their OU breaks legitimate engineering policies." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "Which AD CS PKI architecture best protects the Enterprise Root CA private key long term?",
+            options: [
+              { text: "Deploy a two-tier PKI with an Offline Stand-Alone Root CA and an Enterprise Issuing Subordinate CA, distributing both certs via Enforced GPO", correct: true, feedback: "Verified! Keeping the Root CA offline protects the root trust anchor while the Subordinate CA handles daily issuance." },
+              { text: "Install the Root CA role directly on the primary internet-facing web server", correct: false, feedback: "Never expose a Root CA on an internet-facing host." },
+              { text: "Disable certificate revocation checking (CRL/OCSP) across all domain clients", correct: false, feedback: "Disabling CRL/OCSP prevents clients from detecting compromised certificates." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "IT-OPS-03",
+        track: "IT-OPS",
+        module: "Module 12 • Endpoint & Virtualization Ops",
+        title: "Slow Windows Workstation & VM Snapshot Trap",
+        framework: "Microsoft Learn • Windows Servicing & Hyper-V/VMware",
+        xp: 150,
+        ticket: "A developer workstation with an NVMe SSD is experiencing random explorer crashes (`0x80070002` corrupted system binaries) and degraded write speeds after a junior tech scheduled nightly traditional disk defragmentation. Meanwhile, a sysadmin asks if keeping a 45-day-old VMware snapshot counts as a valid backup before patching. Resolve both.",
+        telemetry: `[STORAGE-AUDIT] Disk 0: NVMe SSD 1TB | TRIM: Disabled | Scheduled Defrag: Enabled (Block-level!)
+[DISM-CHECK] Component Store: Repairable corruption detected in System32
+[VMWARE-ALERT] VM: DEV-BUILD-01 | Snapshot Age: 47 days | Delta VMDK Size: 184 GB`,
+        fieldGuide: [
+          "Never run traditional mechanical block-defragmentation on SSDs—it causes unnecessary NAND write wear; use `Optimize-Volume -ReTrim` (TRIM).",
+          "Repair Windows OS file corruption cleanly using `DISM /Online /Cleanup-Image /RestoreHealth` followed by `sfc /scannow`.",
+          "VM snapshots are delta-disk point-in-time rollback states—NOT backups. Long-lived snapshots bloat delta VMDKs and degrade I/O."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Why are traditional defragmentation and a 47-day-old VM snapshot both operational hazards?",
+            options: [
+              { text: "Traditional defrag causes excessive SSD write-amplification without speed gain, and old VM snapshots bloat delta disks while lacking off-host backup protection", correct: true, feedback: "Correct! SSDs require TRIM rather than block defrag, and snapshots depend on the parent VMDK so they are never true backups." },
+              { text: "SSDs store data magnetically and require daily defragmentation to align platters", correct: false, feedback: "SSDs use solid-state NAND flash, not magnetic platters." },
+              { text: "VM snapshots automatically replicate to AWS S3 every 15 minutes", correct: false, feedback: "Standard hypervisor snapshots reside on the same datastore as the base disk." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "Which command sequence repairs the workstation's corrupted Windows system files and restores SSD health?",
+            options: [
+              { text: "Run `DISM /Online /Cleanup-Image /RestoreHealth`, then `sfc /scannow`, and enable SSD TRIM (`fsutil behavior set DisableDeleteNotify 0`)", correct: true, feedback: "Spot on! DISM repairs the component store first so SFC can replace corrupted binaries cleanly." },
+              { text: "Run `format C: /fs:fat32` and delete the `System32` directory", correct: false, feedback: "Formatting C: destroys the operating system." },
+              { text: "Run `chkdsk /r` 10 times in a row while keeping TRIM disabled", correct: false, feedback: "`chkdsk /r` scans for bad sectors on HDDs and does not replace corrupted Windows binaries like DISM + SFC." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "What is the verified enterprise policy for VM patching checkpoints and workstation storage maintenance?",
+            options: [
+              { text: "Consolidate/delete pre-patch VM snapshots within 24–72 hours, rely on dedicated image-level backups (3-2-1 rule), and schedule weekly SSD TRIM", correct: true, feedback: "Verified! Short-lived patch snapshots + 3-2-1 off-host backups + weekly TRIM ensure reliability and fast recovery." },
+              { text: "Keep 12 chained VM snapshots permanently so you never need backup software", correct: false, feedback: "Chained snapshots severely degrade VM disk I/O and offer zero protection if the datastore fails." },
+              { text: "Disable Windows Servicing Stack updates permanently", correct: false, feedback: "Disabling updates exposes endpoints to critical vulnerabilities." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "IT-OPS-04",
+        track: "IT-OPS",
+        module: "Module 13 • Linux Administration & SSH Security",
+        title: "Linux SSH Key & Filesystem Permission Lockout",
+        framework: "RHEL Hardening / OpenSSH StrictModes",
+        xp: 150,
+        ticket: "After a junior engineer copied their public key onto a RHEL 9 production web server and ran `chmod -R 777 ~/.ssh` to 'fix a permission error', key-based SSH logins immediately broke (`Permission denied (publickey)`). Console access via out-of-band hypervisor is available. Diagnose OpenSSH `StrictModes` and restore access.",
+        telemetry: `[SSHD-LOG] Authentication refused: bad ownership or modes for directory /home/deploy/.ssh
+[LS-LA] drwxrwxrwx 2 deploy deploy 4096 Nov 19 13:40 .ssh
+[LS-LA] -rwxrwxrwx 1 deploy deploy  564 Nov 19 13:40 authorized_keys`,
+        fieldGuide: [
+          "OpenSSH enforces `StrictModes yes` by default: it rejects public-key auth if `~/.ssh` or `authorized_keys` is writable by group or others.",
+          "Required permissions: `chmod 700 ~/.ssh` (drwx------), `chmod 600 ~/.ssh/authorized_keys` (-rw-------), and `chmod 600 ~/.ssh/id_ed25519`.",
+          "Verify ownership (`chown -R deploy:deploy ~/.ssh`) and confirm SELinux context (`restorecon -Rv ~/.ssh`) on RHEL systems."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Why did `chmod -R 777 ~/.ssh` break SSH public-key authentication on RHEL 9?",
+            options: [
+              { text: "OpenSSH `StrictModes` refuses `authorized_keys` if the directory or key file is group/world-writable, as other local users could inject malicious keys", correct: true, feedback: "Exact! `777` allows any local user to modify `authorized_keys`, so `sshd` refuses to trust it." },
+              { text: "SSH keys only work when file permissions are set to `000`", correct: false, feedback: "`000` prevents the user from reading their own `.ssh` directory." },
+              { text: "RHEL 9 automatically deletes any directory with `777` permissions", correct: false, feedback: "RHEL does not delete the directory; `sshd` explicitly logs `bad ownership or modes` and denies key auth." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "Using the hypervisor console, which exact commands restore secure permissions and SELinux labels?",
+            options: [
+              { text: "`chown -R deploy:deploy ~/.ssh && chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys && restorecon -Rv ~/.ssh`", correct: true, feedback: "Spot on! `700` on `~/.ssh`, `600` on `authorized_keys`, proper ownership, and `restorecon` fix OpenSSH + SELinux cleanly." },
+              { text: "Edit `/etc/ssh/sshd_config` to set `StrictModes no` and `PermitRootLogin yes`", correct: false, feedback: "Disabling `StrictModes` weakens host security instead of fixing the broken `777` permissions." },
+              { text: "`chmod 755 ~/.ssh/authorized_keys` so everyone on the server can read it", correct: false, feedback: "`authorized_keys` should be `600` (`-rw-------`), readable and writable only by the owner." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "What is the best practice for deploying SSH keys and hardening `sshd_config` across Linux servers?",
+            options: [
+              { text: "Use `ssh-copy-id` or Ansible automation for key deployment, disable `PasswordAuthentication`, and enforce Ed25519 keys", correct: true, feedback: "Verified! `ssh-copy-id` and configuration management automatically enforce `700`/`600` permissions without human error." },
+              { text: "Share one private key file in a Slack channel for all engineers", correct: false, feedback: "Never share private keys or post credentials in chat channels." },
+              { text: "Run `chmod -R 777 /home` during server provisioning", correct: false, feedback: "World-writable home directories are a severe privilege-escalation vulnerability." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "IT-OPS-05",
+        track: "IT-OPS",
+        module: "Module 14 • Enterprise Networking & DNS",
+        title: "Enterprise VPN Split-Horizon DNS Outage",
+        framework: "Microsoft Learn / RFC 1035 Split-Horizon DNS",
+        xp: 150,
+        ticket: "Remote employees connected to the corporate VPN report that `erp.corp.internal` fails with `NXDOMAIN` or resolves to an external public IP, while public internet sites work fine. On-campus users resolve `erp.corp.internal` to `10.50.12.20` without issues. Diagnose the split-horizon DNS routing and client resolver cache.",
+        telemetry: `[VPN-CLIENT] Interface: Corporate-VPN | DNS Servers: 8.8.8.8 (Primary), 10.50.1.10 (Secondary)
+[NSLOOKUP] > erp.corp.internal -> Server: dns.google (8.8.8.8) -> ** dns.google can't find erp.corp.internal: NXDOMAIN
+[NRPT-POLICY] Name Resolution Policy Table: No rule configured for .corp.internal`,
+        fieldGuide: [
+          "Split-Horizon (Split-Brain) DNS serves internal private records (`10.x.x.x`) to internal/VPN clients and public records to external resolvers.",
+          "If a VPN adapter leaves public DNS (e.g., `8.8.8.8`) at higher metric priority, internal queries leak externally and return `NXDOMAIN`.",
+          "Push internal DNS servers (`10.50.1.10`), search suffixes (`.corp.internal`), and Windows NRPT rules via VPN profile, then run `ipconfig /flushdns`."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Why are VPN clients receiving `NXDOMAIN` when querying `erp.corp.internal`?",
+            options: [
+              { text: "Queries for `.corp.internal` are being sent to public DNS `8.8.8.8` instead of the internal split-horizon DNS server `10.50.1.10`", correct: true, feedback: "Exact! Public resolvers have no knowledge of private internal DNS zones." },
+              { text: "DNS only works over wired Ethernet cables and never over VPN tunnels", correct: false, feedback: "DNS works over any IP interface when proper resolver routes/metrics are configured." },
+              { text: "The internal server `10.50.12.20` ran out of IPv4 addresses", correct: false, feedback: "A single host having a static IP doesn't run out of addresses; the resolver query path is misrouted." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "After updating the VPN gateway to push `10.50.1.10` with a lower interface metric, what client command clears cached negative `NXDOMAIN` entries?",
+            options: [
+              { text: "`ipconfig /flushdns` (and `Register-DnsClient` on Windows)", correct: true, feedback: "Correct! Negative DNS responses (`NXDOMAIN`) are cached locally until TTL expires or `ipconfig /flushdns` clears the resolver cache." },
+              { text: "`arp -d *` to wipe the Layer 2 MAC address table", correct: false, feedback: "`arp -d` clears Layer 2 MAC mappings, not the DNS resolver cache." },
+              { text: "`net user administrator /active:yes`", correct: false, feedback: "Enabling the local Administrator account has nothing to do with DNS resolution." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "How do you prevent split-tunnel VPN clients from leaking internal DNS queries to ISP or public resolvers?",
+            options: [
+              { text: "Configure Name Resolution Policy Table (NRPT) rules / split-DNS suffix routing for `*.corp.internal` and block outbound UDP/TCP 53 to unauthorized resolvers", correct: true, feedback: "Verified! NRPT/split-DNS routing guarantees internal zones always query internal DNS servers." },
+              { text: "Add every internal server IP manually to `C:\\Windows\\System32\\drivers\\etc\\hosts` on 2,000 laptops", correct: false, feedback: "Static hosts files do not scale and break whenever an IP changes." },
+              { text: "Disable DNS entirely and tell employees to memorize IPv6 addresses", correct: false, feedback: "Not operationally viable." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "DATA-01",
+        track: "DATA",
+        module: "Module 15 • Security Analytics & SQL Hunting",
+        title: "SOC Brute-Force SQL Hunt",
+        framework: "NIST SP 800-92 / ANSI SQL Aggregation",
+        xp: 150,
+        ticket: "The SIEM ingestion pipeline buffered 1.2 million authentication rows into the data lake table `auth_logs` (`event_id`, `source_ip`, `username`, `status`, `event_ts`). Security leadership needs an immediate SQL query to isolate external IPs with 10 or more `FAILED` login attempts for firewall blocklisting. Construct the exact query.",
+        telemetry: `[SCHEMA] auth_logs(event_id BIGINT, source_ip VARCHAR, username VARCHAR, status VARCHAR, event_ts TIMESTAMP)
+[SAMPLE] (99102, '185.191.171.12', 'admin', 'FAILED', '2026-11-19 13:55:01')
+[SAMPLE] (99103, '185.191.171.12', 'root',  'FAILED', '2026-11-19 13:55:02')`,
+        fieldGuide: [
+          "SQL logical execution order: `FROM` -> `WHERE` (filters raw rows) -> `GROUP BY` -> `HAVING` (filters aggregated groups) -> `SELECT` -> `ORDER BY`.",
+          "Never use `WHERE COUNT(*) >= 10`—aggregate functions cannot appear in `WHERE`; always use `HAVING COUNT(*) >= 10`.",
+          "Include `ORDER BY failed_attempts DESC` so SOC analysts prioritize the highest-volume attackers first."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Why does `SELECT source_ip, COUNT(*) FROM auth_logs WHERE status = 'FAILED' AND COUNT(*) >= 10 GROUP BY source_ip` throw a SQL syntax error?",
+            options: [
+              { text: "`WHERE` filters individual rows before grouping; aggregate conditions like `COUNT(*) >= 10` must be placed in the `HAVING` clause", correct: true, feedback: "Spot on! Understanding `WHERE` vs. `HAVING` is essential for analytical SQL." },
+              { text: "SQL does not allow filtering string columns like `status = 'FAILED'`", correct: false, feedback: "String equality in `WHERE` is completely valid." },
+              { text: "`COUNT(*)` can only be used on numeric primary key columns", correct: false, feedback: "`COUNT(*)` counts all rows in each group regardless of column types." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "Which SQL query accurately returns attacker IPs with 10+ failed logins sorted by severity?",
+            options: [
+              { text: "`SELECT source_ip, COUNT(*) AS attempts FROM auth_logs WHERE status = 'FAILED' GROUP BY source_ip HAVING COUNT(*) >= 10 ORDER BY attempts DESC;`", correct: true, feedback: "Exact! Filters `FAILED` rows first, groups by `source_ip`, applies `HAVING >= 10`, and sorts descending." },
+              { text: "`SELECT DISTINCT source_ip FROM auth_logs WHERE status = 'FAILED' LIMIT 10;`", correct: false, feedback: "`LIMIT 10` only returns 10 arbitrary rows, not IPs with 10+ failures." },
+              { text: "`SELECT source_ip, SUM(status) FROM auth_logs GROUP BY status;`", correct: false, feedback: "You cannot `SUM()` a text column like `'FAILED'`, and grouping by `status` collapses all IPs together." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "How do you optimize this SOC detection query for billion-row authentication tables and low-and-slow password spraying?",
+            options: [
+              { text: "Partition `auth_logs` by `event_ts`, index `(status, event_ts, source_ip)`, and add `COUNT(DISTINCT username)` to catch password spraying", correct: true, feedback: "Verified! Time-partitioning + `COUNT(DISTINCT username)` detects both brute-force and horizontal password spraying efficiently." },
+              { text: "Run `SELECT * FROM auth_logs` into Excel every 5 minutes", correct: false, feedback: "Excel row limits (1,048,576 rows) and manual exports fail at enterprise scale." },
+              { text: "Delete all `FAILED` rows every hour so queries run faster", correct: false, feedback: "Deleting security logs destroys forensic audit trails." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "DATA-02",
+        track: "DATA",
+        module: "Module 16 • BI Data Modeling & Join Integrity",
+        title: "Broken Helpdesk Dashboard Diagnostic",
+        framework: "Relational Algebra / BI Fan-Out Prevention",
+        xp: 150,
+        ticket: "The VP of IT noticed the executive BI dashboard reports 14,820 open support tickets this week, even though the Service Desk queue only has 2,410 tickets. Inspection reveals the BI dataset joins `tickets` (1 row per ticket) directly to `ticket_comments` (averaging 6.1 comments per ticket) before counting rows. Fix the metric inflation.",
+        telemetry: `[SQL-BI-VIEW] SELECT department, COUNT(t.ticket_id) AS total_tickets
+               FROM tickets t LEFT JOIN ticket_comments c ON t.ticket_id = c.ticket_id
+               GROUP BY department;
+[CARDINALITY] tickets: 2,410 rows | ticket_comments: 14,820 rows (1:Many join fan-out!)`,
+        fieldGuide: [
+          "Joining a parent table (1) to a child table (Many) multiplies parent rows by the number of matching child rows ('Join Fan-Out').",
+          "Using `COUNT(t.ticket_id)` after a 1:Many join counts comment rows rather than unique tickets.",
+          "Resolve fan-out with `COUNT(DISTINCT t.ticket_id)` or by pre-aggregating `ticket_comments` in a CTE before joining."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Why did `COUNT(t.ticket_id)` inflate the ticket count from 2,410 to 14,820?",
+            options: [
+              { text: "The 1:Many `LEFT JOIN` to `ticket_comments` duplicated each `ticket_id` once per comment, and `COUNT()` counted non-null duplicates", correct: true, feedback: "Spot on! A ticket with 8 comments appears 8 times in the joined result set." },
+              { text: "`LEFT JOIN` automatically multiplies all integer columns by 6", correct: false, feedback: "`LEFT JOIN` matches rows based on join predicates; duplication comes from the 1:Many relationship." },
+              { text: "The `GROUP BY department` clause caused a Cartesian cross join", correct: false, feedback: "`GROUP BY` aggregates rows; the `ON t.ticket_id = c.ticket_id` join created the 1:Many expansion." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "What is the quickest SQL correction to report accurate unique ticket counts per department?",
+            options: [
+              { text: "Replace `COUNT(t.ticket_id)` with `COUNT(DISTINCT t.ticket_id)` (or remove the unnecessary `ticket_comments` join if comment fields aren't needed)", correct: true, feedback: "Exact! `COUNT(DISTINCT t.ticket_id)` deduplicates fanned-out rows immediately." },
+              { text: "Change `LEFT JOIN` to `FULL OUTER JOIN`", correct: false, feedback: "A `FULL OUTER JOIN` preserves the exact same 1:Many row duplication." },
+              { text: "Divide `COUNT(t.ticket_id)` by `6.15` in the BI card formula", correct: false, feedback: "Hardcoding magic division constants breaks whenever comment volume fluctuates." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "How should the semantic BI layer be structured when analysts need BOTH unique ticket counts and total comment counts?",
+            options: [
+              { text: "Pre-aggregate `ticket_comments` to 1 row per `ticket_id` in a CTE/subquery before joining to `tickets` (1:1 join)", correct: true, feedback: "Verified! Pre-aggregating child metrics to the parent grain eliminates fan-out across all downstream BI visuals." },
+              { text: "Store all comments inside a single comma-separated text blob on the `tickets` table", correct: false, feedback: "Denormalizing unbounded arrays into CSV strings breaks relational querying and indexing." },
+              { text: "Disable joins across the entire data warehouse", correct: false, feedback: "Joins are fundamental to relational warehousing when grain is properly managed." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "DATA-03",
+        track: "DATA",
+        module: "Module 17 • Operational KPIs & Executive Storytelling",
+        title: "Monthly SOC & Helpdesk KPI Review",
+        framework: "ITIL 4 / NIST SP 800-61 Metrics",
+        xp: 150,
+        ticket: "Following last quarter's rollout of Enterprise SSO and FIDO2 MFA, password-reset helpdesk tickets dropped 68%, and Tier-1 analysts resolved 74% of remaining tickets without escalation. However, Mean Time to Detect (MTTD) on phishing alerts crept up from 11 mins to 38 mins due to noisy low-fidelity SIEM rules. Synthesize the executive KPI brief.",
+        telemetry: `[ITIL-KPI] Password Reset Tickets: 1,450/mo -> 464/mo (-68%) | First-Contact Resolution (FCR): 74%
+[SOC-KPI]  MTTD (Mean Time to Detect): 11m -> 38m (+245%) | MTTR (Containment): 22m
+[SIEM-NOISE] Alert Volume: +310% from untuned informational login rules`,
+        fieldGuide: [
+          "First-Contact Resolution (FCR %) measures Tier-1 efficiency and user satisfaction without costly Tier-2/3 escalations.",
+          "MTTD measures detection speed (alert creation to triage start), while MTTR measures containment/remediation speed.",
+          "Executive storytelling pairs quantified ROI (SSO/MFA ticket reduction) with targeted action plans (SIEM rule tuning to cut MTTD)."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "What do the simultaneous 68% drop in password resets and 38-minute MTTD spike tell leadership?",
+            options: [
+              { text: "SSO/MFA delivered strong Helpdesk ROI and high 74% FCR, but untuned SIEM alert fatigue is slowing SOC detection speed (MTTD)", correct: true, feedback: "Spot on! Separating Helpdesk efficiency gains from SOC alert-fatigue bottlenecks shows mature analytical clarity." },
+              { text: "The SSO rollout broke all SIEM logging and caused more password resets", correct: false, feedback: "Password resets dropped by 68%, proving SSO succeeded." },
+              { text: "A higher MTTD of 38 minutes means the SOC is detecting threats 3x faster", correct: false, feedback: "Lower MTTD is better; an increase from 11m to 38m means slower detection." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "Which immediate action reduces SOC MTTD without sacrificing visibility into real phishing threats?",
+            options: [
+              { text: "Suppress/tune noisy informational SIEM rules, auto-enrich high-confidence phishing alerts via SOAR, and route priority queues to Tier-1", correct: true, feedback: "Exact! Removing false-positive noise immediately restores analyst focus and lowers MTTD." },
+              { text: "Turn off all SIEM alerting on weekends to keep monthly averages low", correct: false, feedback: "Disabling alerts creates blind spots during prime attacker windows." },
+              { text: "Reassign all Tier-1 helpdesk agents to write raw Python parsers full time", correct: false, feedback: "Pulling Tier-1 off the queue would tank your 74% FCR." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "How should these operational KPIs be institutionalized for quarterly executive governance?",
+            options: [
+              { text: "Track FCR %, Cost-per-Ticket, MTTD, and MTTR against SLA thresholds in an automated executive scorecard with monthly rule-tuning sprints", correct: true, feedback: "Verified! Linking SLA targets to continuous rule-tuning sprints sustains both ROI and rapid cyber defense." },
+              { text: "Stop measuring MTTD and report only total raw log gigabytes ingested", correct: false, feedback: "Log ingestion volume is a cost metric, not a security outcome metric." },
+              { text: "Rollback SSO so Tier-1 agents have more password reset tickets to boost ticket volume", correct: false, feedback: "Artificially inflating ticket volume wastes operational budget." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "DATA-04",
+        track: "DATA",
+        module: "Module 18 • Dimensional Modeling & Data Warehousing",
+        title: "Star Schema Grain Mismatch & Revenue Fan-Out Audit",
+        framework: "Kimball Dimensional Modeling",
+        xp: 150,
+        ticket: "Finance reconciled the Q3 Data Warehouse report and found reported gross revenue ($14.2M) overstated actual ERP ledger revenue ($9.8M) by $4.4M. Auditing the BI semantic model shows `Fact_Sales` (grain: 1 row per order line item) is joined directly to `Dim_Promotions` where multiple promo codes can apply to a single line item. Resolve the grain mismatch.",
+        telemetry: `[WAREHOUSE-MODEL] Fact_Sales (Grain: order_id + line_item_id, sales_amount DECIMAL(12,2))
+[JOIN-AUDIT] Fact_Sales LEFT JOIN Dim_Promotions ON Fact_Sales.order_id = Dim_Promotions.order_id
+[ANOMALY] Order #88412 ($1,000) matched 3 rows in Dim_Promotions -> SUM(sales_amount) = $3,000!`,
+        fieldGuide: [
+          "Kimball Rule #1: Declare the exact grain of every Fact table before adding dimensions or writing aggregations.",
+          "Joining a lower-grain Fact table (`order_line_item`) to a multi-valued dimension (`order_id` with multiple promos) causes additive measure fan-out.",
+          "Resolve many-to-many dimension relationships using a Kimball Bridge Table (with weighting factors) or a Promotion Group surrogate key."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Why did `SUM(Fact_Sales.sales_amount)` overstate Q3 revenue by $4.4M?",
+            options: [
+              { text: "Joining `Fact_Sales` at the `order_id` level to multi-valued `Dim_Promotions` violated the line-item grain, multiplying `sales_amount` per promo row", correct: true, feedback: "Spot on! Additive facts (`sales_amount`) cannot be summed across a 1:Many dimension join without grain alignment." },
+              { text: "`DECIMAL(12,2)` columns automatically round every transaction up to the nearest thousand", correct: false, feedback: "`DECIMAL(12,2)` stores exact two-decimal precision." },
+              { text: "Star schemas are prohibited from having more than one dimension table", correct: false, feedback: "Star schemas routinely link a central fact table to many conformal dimensions." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "Before refactoring the warehouse schema, how do you immediately produce an accurate Q3 revenue reconciliation query for Finance?",
+            options: [
+              { text: "Query `Fact_Sales` directly without the `Dim_Promotions` join (or aggregate `Fact_Sales` at its native `order_line_item` grain prior to reporting)", correct: true, feedback: "Exact! Summing `Fact_Sales` at its declared grain immediately restores the true $9.8M ERP figure." },
+              { text: "Use `SUM(DISTINCT sales_amount)` across the entire Q3 table", correct: false, feedback: "`SUM(DISTINCT sales_amount)` would wrongly drop legitimate separate orders that happen to have the same dollar amount (e.g., two $50 orders)." },
+              { text: "Delete all rows from `Dim_Promotions` in production", correct: false, feedback: "Deleting dimension rows breaks historical campaign analytics." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "What is the canonical Kimball dimensional modeling solution for multi-valued promotions on a line-item fact table?",
+            options: [
+              { text: "Implement a `Bridge_Promotion_Group` table with allocation weights (or assign a single `promo_group_sk` per combination) and add automated reconciliation tests", correct: true, feedback: "Verified! Kimball Bridge Tables preserve true fact grain while supporting multi-valued promotional attribution." },
+              { text: "Create 20 nullable columns (`promo_1` through `promo_20`) inside `Fact_Sales`", correct: false, feedback: "Wide horizontal promo columns violate dimensional design and complicate BI filtering." },
+              { text: "Switch all fact measures to `VARCHAR` text fields so `SUM()` cannot be called", correct: false, feedback: "Fact measures must remain numeric." }
+            ]
+          }
+        ]
+      },
+      {
+        id: "DATA-05",
+        track: "DATA",
+        module: "Module 19 • Data Engineering & Quality Governance",
+        title: "Messy ETL Pipeline & Orphaned Foreign Key Triage",
+        framework: "DAMA-DMBOK2 / Idempotent ETL Gates",
+        xp: 150,
+        ticket: "Nightly ingestion from a newly acquired subsidiary's CRM into `fact_orders` failed BI refresh checks: 420 duplicate order IDs arrived from retries, `order_date` mixes `MM/DD/YYYY` and `YYYY-MM-DD`, and 85 orders reference `customer_id` values missing from `dim_customers`. Implement DAMA-DMBOK2 quality gates.",
+        telemetry: `[ETL-STAGING] Batch: 2026-11-19 | Total Rows: 18,400
+[DQ-CHECK-1] Duplicate natural key (order_id): 420 rows (at-least-once webhook retry)
+[DQ-CHECK-2] Mixed date formats: '11/19/2026' vs '2026-11-19'
+[DQ-CHECK-3] Orphaned FK: 85 rows where staging.customer_id NOT IN dim_customers`,
+        fieldGuide: [
+          "DAMA-DMBOK2 Data Quality Dimensions: Uniqueness, Validity, Consistency, Completeness, and Referential Integrity.",
+          "Deduplicate idempotently using `ROW_NUMBER() OVER (PARTITION BY order_id ORDER BY updated_at DESC) = 1` and normalize dates to ISO-8601 (`YYYY-MM-DD`).",
+          "Never silently drop orphaned foreign keys—route them to an `etl_quarantine` audit table or map temporarily to an `Unknown Member (SK = -1)` row."
+        ],
+        stages: [
+          {
+            label: "Stage 1: Triage & Root Cause",
+            question: "Which DAMA-DMBOK2 data quality dimensions are violated by the subsidiary's staging batch?",
+            options: [
+              { text: "Uniqueness (420 duplicate order IDs), Validity/Consistency (mixed date strings), and Referential Integrity (85 orphaned customer_ids)", correct: true, feedback: "Spot on! Mapping symptoms to formal DAMA-DMBOK2 dimensions guides targeted automated quality gates." },
+              { text: "Only physical disk capacity on the database server", correct: false, feedback: "The failures are schema, uniqueness, and referential integrity issues." },
+              { text: "Network latency between the BI dashboard and user monitors", correct: false, feedback: "The anomalies originate inside the ETL staging layer." }
+            ]
+          },
+          {
+            label: "Stage 2: Immediate Containment",
+            question: "How should the ETL pipeline handle the 85 orphaned `customer_id` records without losing financial revenue totals or breaking FK constraints?",
+            options: [
+              { text: "Map missing FKs to a dedicated `Unknown Member (customer_sk = -1)` dimension row and log the 85 natural keys to `etl_quarantine` for late-arriving backfill", correct: true, feedback: "Textbook Data Engineering! `Unknown SK = -1` preserves financial completeness while `etl_quarantine` tracks remediation." },
+              { text: "Silently `DELETE` all 85 orders so the foreign key constraint passes", correct: false, feedback: "Silently deleting valid orders causes financial revenue under-reporting." },
+              { text: "Disable all primary and foreign key constraints across the warehouse permanently", correct: false, feedback: "Removing referential integrity checks corrupts downstream BI analytics." }
+            ]
+          },
+          {
+            label: "Stage 3: Long-Term Hardening",
+            question: "Which transformation pattern ensures idempotent, repeatable nightly loads even when upstream webhooks retry?",
+            options: [
+              { text: "Deduplicate staging via `ROW_NUMBER() OVER (PARTITION BY order_id ORDER BY ingested_at DESC) = 1`, cast dates to ISO-8601, and `MERGE` (upsert) into target", correct: true, feedback: "Verified! Window-function deduplication + ISO-8601 standardization + idempotent `MERGE` guarantees clean reruns." },
+              { text: "Use `INSERT INTO fact_orders SELECT * FROM staging` without deduplication", correct: false, feedback: "Blind `INSERT` duplicates records whenever a batch is retried." },
+              { text: "Manually edit the CSV files in Notepad every morning at 6:00 AM", correct: false, feedback: "Manual edits are error-prone and non-repeatable." }
+            ]
+          }
+        ]
+      }
+    ];
+
+    // =========================================================================
+    // 2. DATASET: 12 CLI & SQL SANDBOX CHALLENGES (+100 XP EACH)
+    // =========================================================================
+    const SANDBOX_DATA = [
+      {
+        id: "SBX-01",
+        track: "IT-OPS",
+        title: "Verify Applied Group Policies",
+        env: "Windows 11 Enterprise • PowerShell / CMD (Endpoint: ENG-WS-042)",
+        prompt: "A user in `OU=Engineering` reports their internal Root CA certificate is missing. Run the native Windows command to display a summary of applied and denied Group Policy Objects on the local computer.",
+        chips: ["gpresult", "/r", "/scope", "computer", "gpupdate /force"],
+        solution: "gpresult /r",
+        validate: (cmd) => /^gpresult\s+\/r(\s+\/scope\s+computer)?$/i.test(cmd.trim()),
+        hint: "Use `gpresult` with the `/r` flag (Resultant Set of Policy summary).",
+        output: `Microsoft (R) Windows (R) Operating System Group Policy Result tool v2.0
+Created on 11/19/2026 at 2:10:14 PM
+
+COMPUTER SETTINGS
+------------------
+    CN=ENG-WS-042,OU=Engineering,DC=corp,DC=internal
+    Last time Group Policy was applied: 11/19/2026 at 1:45:02 PM
+    Group Policy was applied from:      DC01.corp.internal
+
+    Applied Group Policy Objects
+    -----------------------------
+        Default Domain Policy
+        Local Group Policy
+
+    The following GPOs were not applied because they were filtered out
+    -------------------------------------------------------------------
+        Corp-Root-CA-Trust
+            Filtering:  Denied (Block Inheritance)`
+      },
+      {
+        id: "SBX-02",
+        track: "IT-OPS",
+        title: "Repair Corrupted Windows System Files",
+        env: "Windows 11 Pro • Elevated Administrator Terminal",
+        prompt: "After a sudden power loss on an endpoint, System32 binaries are throwing hash mismatch errors. Execute the System File Checker command to scan and repair protected Windows files.",
+        chips: ["sfc", "/scannow", "/verifyonly", "chkdsk", "DISM"],
+        solution: "sfc /scannow",
+        validate: (cmd) => /^sfc\s+\/scannow$/i.test(cmd.trim()),
+        hint: "Invoke `sfc` with the `/scannow` switch.",
+        output: `Beginning system scan.  This process will take some time.
+
+Beginning verification phase of system scan.
+Verification 100% complete.
+
+Windows Resource Protection found corrupt files and successfully repaired them.
+For online repairs, details are included in the CBS log file located at
+windir\\Logs\\CBS\\CBS.log.`
+      },
+      {
+        id: "SBX-03",
+        track: "CYBER",
+        title: "Generate Forensic Integrity Hash",
+        env: "Ubuntu Forensic Workstation (Air-Gapped) • /cases/INC-2026-08/",
+        prompt: "You just imaged a seized suspect NVMe partition via a hardware write-blocker to `evidence.dd`. Generate a cryptographic SHA-256 checksum to record in the Chain of Custody log.",
+        chips: ["sha256sum", "evidence.dd", "md5sum", "-c", "> evidence.sha256"],
+        solution: "sha256sum evidence.dd",
+        validate: (cmd) => /^sha256sum\s+evidence\.dd(\s+.*)?$/i.test(cmd.trim()),
+        hint: "Use `sha256sum` followed by the raw image filename `evidence.dd`.",
+        output: `9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08  evidence.dd`
+      },
+      {
+        id: "SBX-04",
+        track: "CYBER",
+        title: "Authorized Service & Version Enumeration",
+        env: "Kali Security Assessment Host • Authorized RoE Target: 10.10.20.15",
+        prompt: "Within written Rules of Engagement, run an Nmap service version detection scan (`-sV`) targeting ports `80,443,1521` on internal legacy server `10.10.20.15`.",
+        chips: ["nmap", "-sV", "-p", "80,443,1521", "10.10.20.15"],
+        solution: "nmap -sV -p 80,443,1521 10.10.20.15",
+        validate: (cmd) => /nmap/i.test(cmd) && /-sV/.test(cmd) && /80,443,1521/.test(cmd) && /10\.10\.20\.15/.test(cmd),
+        hint: "Combine `nmap`, `-sV` for banner/version detection, `-p 80,443,1521`, and the target IP.",
+        output: `Starting Nmap 7.95 ( https://nmap.org ) at 2026-11-19 14:12 EST
+Nmap scan report for 10.10.20.15
+Host is up (0.0014s latency).
+
+PORT     STATE SERVICE    VERSION
+80/tcp   open  http       Microsoft IIS httpd 8.5
+443/tcp  open  ssl/https  Microsoft IIS httpd 8.5 (TLS 1.0 enabled)
+1521/tcp open  oracle-tns Oracle TNS Listener 11.2.0.4.0 (unencrypted)
+
+Service detection performed. Please report any incorrect results.`
+      },
+      {
+        id: "SBX-05",
+        track: "IT-OPS",
+        title: "DNS Mail Exchanger (MX) Record Lookup",
+        env: "Network Operations Terminal • DNS Diagnostic Shell",
+        prompt: "Verify the Mail Exchanger (`MX`) DNS records for `corp-domain.com` using `nslookup` to troubleshoot inbound email routing.",
+        chips: ["nslookup", "-type=MX", "-query=mx", "corp-domain.com"],
+        solution: "nslookup -type=MX corp-domain.com",
+        validate: (cmd) => /^nslookup\s+(-type=mx|-query=mx|-q=mx)\s+corp-domain\.com$/i.test(cmd.trim()),
+        hint: "Use `nslookup -type=MX corp-domain.com`.",
+        output: `Server:  dns01.corp.internal
+Address:  10.50.1.10
+
+Non-authoritative answer:
+corp-domain.com   MX preference = 10, mail exchanger = mx1-us.securemail-gateway.com
+corp-domain.com   MX preference = 20, mail exchanger = mx2-us.securemail-gateway.com`
+      },
+      {
+        id: "SBX-06",
+        track: "CYBER",
+        title: "Inspect Active Network Sockets & PIDs",
+        env: "Windows Server 2022 • Incident Triage Shell (FIN-APP-02)",
+        prompt: "An EDR alert flagged a suspicious outbound C2 connection on TCP 443. Run `netstat` with flags to display all active connections, numerical IP/port addresses, and owning Process IDs (PIDs).",
+        chips: ["netstat", "-ano", "-anob", "findstr :443"],
+        solution: "netstat -ano",
+        validate: (cmd) => /^netstat\s+-ano(b)?(\s+\|\s+findstr\s+.*)?$/i.test(cmd.trim()),
+        hint: "Use `netstat` with `-a` (all), `-n` (numeric), and `-o` (owning PID) -> `netstat -ano`.",
+        output: `Active Connections
+
+  Proto  Local Address          Foreign Address        State           PID
+  TCP    0.0.0.0:135            0.0.0.0:0              LISTENING       912
+  TCP    10.10.30.14:49812      45.33.19.102:443       ESTABLISHED     6428
+  TCP    10.10.30.14:445        10.10.30.99:51104      ESTABLISHED     4`
+      },
+      {
+        id: "SBX-07",
+        track: "CYBER",
+        title: "Linux SSH Brute-Force Log Hunt",
+        env: "RHEL 9 Bastion Host • /var/log/auth.log",
+        prompt: 'Search `/var/log/auth.log` using `grep` to extract all `"Failed password"` SSH authentication events.',
+        chips: ["grep", '"Failed password"', "/var/log/auth.log", "| wc -l"],
+        solution: 'grep "Failed password" /var/log/auth.log',
+        validate: (cmd) => /^grep\s+["']Failed password["']\s+\/var\/log\/auth\.log(\s+.*)?$/i.test(cmd.trim()),
+        hint: 'Pass `"Failed password"` and `/var/log/auth.log` to `grep`.',
+        output: `Nov 19 04:11:02 bastion01 sshd[19201]: Failed password for invalid user admin from 185.220.101.4 port 44120 ssh2
+Nov 19 04:11:04 bastion01 sshd[19201]: Failed password for invalid user root from 185.220.101.4 port 44122 ssh2
+Nov 19 04:11:05 bastion01 sshd[19201]: Failed password for deploy from 185.220.101.4 port 44125 ssh2`
+      },
+      {
+        id: "SBX-08",
+        track: "IT-OPS",
+        title: "Fix OpenSSH StrictModes Key Lockout",
+        env: "RHEL 9 Production Server • Hypervisor Console (/home/deploy)",
+        prompt: "Someone ran `chmod 777` on `~/.ssh/authorized_keys`, causing OpenSSH `StrictModes` to reject key logins. Set the exact octal permission (`600`) on `~/.ssh/authorized_keys`.",
+        chips: ["chmod", "600", "700", "~/.ssh/authorized_keys", "~/.ssh"],
+        solution: "chmod 600 ~/.ssh/authorized_keys",
+        validate: (cmd) => /^chmod\s+600\s+(~\/\.ssh\/authorized_keys|\/home\/deploy\/\.ssh\/authorized_keys)$/i.test(cmd.trim()),
+        hint: "Use `chmod 600` on `~/.ssh/authorized_keys` so only the owner has read/write access.",
+        output: `[deploy@prod-web01 ~]$ ls -l ~/.ssh/authorized_keys
+-rw-------. 1 deploy deploy 564 Nov 19 14:15 /home/deploy/.ssh/authorized_keys
+[SUCCESS] OpenSSH StrictModes validation passed.`
+      },
+      {
+        id: "SBX-09",
+        track: "IT-OPS",
+        title: "Flush Stale DNS Resolver Cache",
+        env: "Windows 11 Remote VPN Client • Command Prompt",
+        prompt: "You just corrected the Split-Horizon DNS metric on the VPN adapter. Flush the local Windows DNS resolver cache so negative `NXDOMAIN` entries are cleared immediately.",
+        chips: ["ipconfig", "/flushdns", "/displaydns", "/registerdns"],
+        solution: "ipconfig /flushdns",
+        validate: (cmd) => /^ipconfig\s+\/flushdns$/i.test(cmd.trim()),
+        hint: "Run `ipconfig` with the `/flushdns` parameter.",
+        output: `Windows IP Configuration
+
+Successfully flushed the DNS Resolver Cache.`
+      },
+      {
+        id: "SBX-10",
+        track: "DATA",
+        title: "SQL Brute-Force Detection Query",
+        env: "Snowflake / PostgreSQL SIEM Data Lake • Table: auth_logs",
+        prompt: "Write a SQL query against `auth_logs` (`source_ip`, `status`) to list each `source_ip` and its `COUNT(*)` where `status = 'FAILED'` and the failure count is `>= 10`.",
+        chips: ["SELECT source_ip, COUNT(*)", "FROM auth_logs", "WHERE status = 'FAILED'", "GROUP BY source_ip", "HAVING COUNT(*) >= 10;"],
+        solution: "SELECT source_ip, COUNT(*) FROM auth_logs WHERE status = 'FAILED' GROUP BY source_ip HAVING COUNT(*) >= 10;",
+        validate: (cmd) => {
+          const s = cmd.replace(/\s+/g, ' ').trim().toUpperCase();
+          return s.includes('SELECT') && s.includes('SOURCE_IP') && s.includes('COUNT(*)') &&
+                 s.includes('FROM AUTH_LOGS') && s.includes("STATUS = 'FAILED'") &&
+                 s.includes('GROUP BY SOURCE_IP') && s.includes('HAVING COUNT(*) >= 10');
+        },
+        hint: "Filter `WHERE status = 'FAILED'` before `GROUP BY source_ip`, then filter groups with `HAVING COUNT(*) >= 10;`.",
+        output: `+-----------------+----------+
+| source_ip       | count    |
++-----------------+----------+
+| 185.191.171.12  | 418      |
+| 91.240.118.172  | 94       |
+| 45.155.205.233  | 27       |
++-----------------+----------+
+3 rows returned (0.14s)`
+      },
+      {
+        id: "SBX-11",
+        track: "DATA",
+        title: "SQL Join Fan-Out Deduplication",
+        env: "Enterprise BI Warehouse • Tables: tickets t, comments c",
+        prompt: "Fix a 1:Many join fan-out query so it counts unique tickets (`COUNT(DISTINCT t.ticket_id)`) grouped by `t.department` when joining `tickets t` to `comments c`.",
+        chips: ["SELECT t.department, COUNT(DISTINCT t.ticket_id)", "FROM tickets t", "JOIN comments c ON t.ticket_id = c.ticket_id", "GROUP BY t.department;"],
+        solution: "SELECT t.department, COUNT(DISTINCT t.ticket_id) FROM tickets t JOIN comments c ON t.ticket_id = c.ticket_id GROUP BY t.department;",
+        validate: (cmd) => {
+          const s = cmd.replace(/\s+/g, ' ').trim().toUpperCase();
+          return s.includes('SELECT') && s.includes('COUNT(DISTINCT') && s.includes('TICKET_ID') &&
+                 s.includes('FROM TICKETS') && s.includes('JOIN COMMENTS') && s.includes('GROUP BY');
+        },
+        hint: "Use `COUNT(DISTINCT t.ticket_id)` alongside `GROUP BY t.department`.",
+        output: `+----------------+----------------+
+| department     | unique_tickets |
++----------------+----------------+
+| Engineering    | 842            |
+| Finance        | 619            |
+| Customer Ops   | 949            |
++----------------+----------------+
+3 rows returned — Fan-out eliminated!`
+      },
+      {
+        id: "SBX-12",
+        track: "DATA",
+        title: "SQL Orphaned Foreign Key Quality Audit",
+        env: "ETL Staging Warehouse • Tables: staging_sales, dim_customers",
+        prompt: "Audit `staging_sales` for referential integrity violations by selecting all rows where `customer_id IS NULL` OR `customer_id NOT IN (SELECT customer_id FROM dim_customers)`.",
+        chips: ["SELECT * FROM staging_sales", "WHERE customer_id IS NULL", "OR customer_id NOT IN", "(SELECT customer_id FROM dim_customers);"],
+        solution: "SELECT * FROM staging_sales WHERE customer_id IS NULL OR customer_id NOT IN (SELECT customer_id FROM dim_customers);",
+        validate: (cmd) => {
+          const s = cmd.replace(/\s+/g, ' ').trim().toUpperCase();
+          return s.includes('SELECT') && s.includes('FROM STAGING_SALES') &&
+                 s.includes('CUSTOMER_ID IS NULL') && s.includes('NOT IN') && s.includes('DIM_CUSTOMERS');
+        },
+        hint: "Check both `customer_id IS NULL` and `customer_id NOT IN (SELECT customer_id FROM dim_customers)`.",
+        output: `+----------+-------------+----------+------------+
+| order_id | customer_id | amount   | order_date |
++----------+-------------+----------+------------+
+| ORD-9041 | NULL        | 450.00   | 2026-11-19 |
+| ORD-9088 | CUST-99812  | 1,290.00 | 2026-11-19 |
++----------+-------------+----------+------------+
+2 orphaned records flagged for etl_quarantine.`
+      }
+    ];
+
+    // =========================================================================
+    // 3. DATASET: 24 FLASHCARDS & RAPID-TRIAGE QUIZ ITEMS (+25 XP EACH)
+    // =========================================================================
+    const FLASHCARDS_DATA = [
+      { id: "FC-01", track: "CYBER", module: "CYBER-01 • CIA Triad", prompt: "Which CIA Triad pillar is violated first by shoulder surfing and unencrypted public Wi-Fi sniffing?", answer: "Confidentiality — unauthorized viewing or packet capture exposes sensitive data.", tip: "Mitigate with Always-On VPN + HSTS + 3M physical privacy screens (NIST SP 800-46).", distractors: ["Availability", "Non-repudiation", "Resource Pooling"] },
+      { id: "FC-02", track: "CYBER", module: "CYBER-02 • AiTM Phishing", prompt: "How does an Adversary-in-the-Middle (AiTM) reverse proxy bypass SMS or TOTP 2FA?", answer: "It relays credentials in real time and captures the post-MFA authenticated session cookie.", tip: "Defeat AiTM with origin-bound FIDO2/WebAuthn Passkeys and revoke active refresh tokens.", distractors: ["By cracking SHA-256 hashes offline", "By disabling the victim's BIOS", "By flooding TCP port 53"] },
+      { id: "FC-03", track: "CYBER", module: "CYBER-03 • Legacy Risk", prompt: "What immediate architectural control shields an End-of-Life (EOL) IIS 8.5 web server before OS migration?", answer: "Place a Web Application Firewall (WAF) with virtual patching in front of the DMZ host and disable TLS 1.0/1.1.", tip: "Move backend databases off the DMZ into an isolated private subnet.", distractors: ["Rename the local Administrator account", "Change port 443 to 8080 without a firewall", "Enable SMBv1"] },
+      { id: "FC-04", track: "CYBER", module: "CYBER-04 • OSINT & RoE", prompt: "Why is querying Shodan or Certificate Transparency logs classified as Passive OSINT?", answer: "It queries third-party indexed repositories without sending packets directly to target servers.", tip: "Never exceed written Penetration Testing Rules of Engagement (RoE) when discovering exposed `.git` folders.", distractors: ["Because it runs automated SQL injection", "Because it brute-forces SSH keys", "Because it crashes legacy Apache servers"] },
+      { id: "FC-05", track: "CYBER", module: "CYBER-05 • NGFW vs Stateless", prompt: "Why can an NGFW block non-HTTPS C2 malware hiding on TCP port 443 while a stateless ACL allows it?", answer: "NGFWs perform OSI Layer 7 Deep Packet Inspection (App-ID) & TLS inspection, whereas stateless filters only check Layer 3/4 IP & port headers.", tip: "Enforce App-ID `ssl`/`web-browsing` on port 443 to block protocol masquerading.", distractors: ["Stateless firewalls only inspect Layer 7 payloads", "NGFWs operate strictly at Layer 1 physical cabling", "Port 443 is reserved for ICMP"] },
+      { id: "FC-06", track: "CYBER", module: "CYBER-06 • Digital Forensics", prompt: "What two mandatory steps protect disk evidence integrity during forensic imaging?", answer: "Attach the drive through a hardware write-blocker and compute SHA-256 hashes before and after imaging.", tip: "Follow RFC 3227 Order of Volatility: capture volatile RAM before powering off.", distractors: ["Mount the drive read-write on Windows", "Use MD5 over public Wi-Fi", "Edit file timestamps manually"] },
+      { id: "FC-07", track: "CYBER", module: "CYBER-07 • Insider Threat", prompt: "Why does disabling a terminated contractor's SSO login fail to stop `aws s3 sync` exfiltration?", answer: "Long-lived static AWS IAM access keys and SSH keys bypass web SSO and remain valid until explicitly deleted.", tip: "Replace static keys with SSO-federated short-lived STS tokens and SCIM automation.", distractors: ["Because S3 buckets ignore all IAM policies", "Because SSO takes 30 days to expire", "Because `aws s3 sync` runs over ICMP"] },
+      { id: "FC-08", track: "CYBER", module: "CYBER-08 • NIST SP 800-61", prompt: "During active ransomware encryption, why do you use EDR Network Quarantine instead of pulling the power plug?", answer: "EDR Quarantine isolates network/SMB spread immediately while preserving volatile RAM where encryption keys and process artifacts live.", tip: "NIST SP 800-61: Preparation -> Detection & Analysis -> Containment, Eradication & Recovery -> Post-Incident.", distractors: ["Pulling power decrypts `.locked` files automatically", "EDR Quarantine formats the hard drive", "RAM never holds active process data"] },
+      { id: "FC-09", track: "CYBER", module: "CYBER-09 • OWASP BOLA/IDOR", prompt: "How do you permanently fix Broken Object Level Authorization (BOLA / IDOR) on `/api/v1/invoices?user_id=1042`?", answer: "Validate object ownership on the server using the authenticated session/JWT subject (`WHERE owner_id = session.userId`) and use UUIDv4 IDs.", tip: "Never trust client-supplied user IDs in query strings or request bodies.", distractors: ["Base64-encode sequential integers", "Hide the parameter in frontend CSS", "Disable HTTPS on the API gateway"] },
+      { id: "FC-10", track: "IT-OPS", module: "IT-OPS-01 • RODC & PRP", prompt: "How does a Read-Only Domain Controller (RODC) decide which user passwords to cache for branch WAN outages?", answer: "Via the Password Replication Policy (PRP) Allowed list; by default an RODC caches zero passwords and blocks Tier-0 Admins.", tip: "Upon physical RODC theft, reset only credentials listed in the RODC's Revealed Credentials cache.", distractors: ["It caches Domain Admin passwords by default", "It replicates changes back to writable DCs", "It uses local `/etc/passwd` files"] },
+      { id: "FC-11", track: "IT-OPS", module: "IT-OPS-02 • GPO Precedence", prompt: "What is the exact Group Policy processing precedence order in Active Directory?", answer: "LSDOU: Local -> Site -> Domain -> Organizational Unit (the last applied policy wins unless 'Enforced' is set).", tip: "Marking a baseline GPO 'Enforced' overrides 'Block Inheritance' on child OUs.", distractors: ["OU -> Domain -> Site -> Local", "Site -> Local -> OU -> Domain", "Domain -> Local -> Site -> OU"] },
+      { id: "FC-12", track: "IT-OPS", module: "IT-OPS-03 • SSD & Snapshots", prompt: "Why should you run TRIM instead of traditional defragmentation on SSDs, and why aren't VM snapshots backups?", answer: "Traditional defrag causes unnecessary SSD NAND write wear without speed gain; VM snapshots are delta disks tied to the parent VMDK, not independent backups.", tip: "Repair Windows OS corruption with `DISM /RestoreHealth` then `sfc /scannow`.", distractors: ["SSDs have spinning magnetic platters", "VM snapshots replicate automatically to tape", "Snapshots improve disk I/O over time"] },
+      { id: "FC-13", track: "IT-OPS", module: "IT-OPS-04 • OpenSSH StrictModes", prompt: "What exact Linux octal permissions are required by OpenSSH `StrictModes` for `~/.ssh` and `~/.ssh/authorized_keys`?", answer: "`chmod 700 ~/.ssh` (drwx------) and `chmod 600 ~/.ssh/authorized_keys` (-rw-------).", tip: "On RHEL systems, also run `restorecon -Rv ~/.ssh` to ensure valid SELinux file contexts.", distractors: ["`chmod 777 ~/.ssh`", "`chmod 644 ~/.ssh` and `755 authorized_keys`", "`chmod 000 ~/.ssh`"] },
+      { id: "FC-14", track: "IT-OPS", module: "IT-OPS-05 • Split-Horizon DNS", prompt: "What causes `NXDOMAIN` on internal domains over VPN when public DNS (`8.8.8.8`) has higher metric priority?", answer: "Internal queries leak to public resolvers that lack private zone records; fix with split-DNS / NRPT rules + `ipconfig /flushdns`.", tip: "Negative `NXDOMAIN` responses stay cached locally until `ipconfig /flushdns` is executed.", distractors: ["Public DNS servers host all private RFC 1918 records", "VPN tunnels block UDP port 53 by design", "`arp -d *` clears DNS cache"] },
+      { id: "FC-15", track: "DATA", module: "DATA-01 • SQL Execution Order", prompt: "In SQL, why must aggregate filters like `COUNT(*) >= 10` be placed in `HAVING` rather than `WHERE`?", answer: "`WHERE` filters raw individual rows before grouping occurs; `HAVING` filters aggregated groups after `GROUP BY`.", tip: "Execution order: FROM -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY.", distractors: ["`WHERE` only works on numeric columns", "`HAVING` runs before `FROM`", "`COUNT(*)` is deprecated in ANSI SQL"] },
+      { id: "FC-16", track: "DATA", module: "DATA-02 • BI Join Fan-Out", prompt: "How do you prevent inflated metrics when joining a parent table (1) to a child table (Many) in BI reports?", answer: "Use `COUNT(DISTINCT parent_id)` or pre-aggregate the child table to a 1:1 grain inside a CTE before joining.", tip: "Joining 1 ticket to 6 comments duplicates the ticket row 6 times.", distractors: ["Change `LEFT JOIN` to `FULL OUTER JOIN`", "Divide totals by a hardcoded constant", "Use `SUM(DISTINCT amount)`"] },
+      { id: "FC-17", track: "DATA", module: "DATA-03 • SOC & ITIL KPIs", prompt: "Distinguish between MTTD, MTTR, and First-Contact Resolution (FCR %) in operational reporting.", answer: "MTTD = Mean Time to Detect threats; MTTR = Mean Time to Respond/Contain; FCR % = % of tickets resolved at Tier-1 without escalation.", tip: "Untuned SIEM alert fatigue directly degrades (increases) MTTD.", distractors: ["MTTD measures disk fragmentation speed", "Higher MTTD indicates faster threat detection", "FCR measures raw SIEM log gigabytes"] },
+      { id: "FC-18", track: "DATA", module: "DATA-04 • Kimball Star Schema", prompt: "How does Kimball dimensional modeling solve multi-valued dimensions (e.g., multiple promos per order line item) without inflating revenue?", answer: "Declare the exact Fact grain first and use a Bridge Table (with weighting factors) or a single Promo Group surrogate key.", tip: "Never join a line-item fact directly to a multi-row promotion table.", distractors: ["Duplicate the fact rows for each promo", "Store measures as VARCHAR strings", "Drop the Fact table primary key"] },
+      { id: "FC-19", track: "DATA", module: "DATA-05 • DAMA-DMBOK2 ETL", prompt: "How should an enterprise ETL pipeline handle orphaned foreign keys without losing financial facts or breaking constraints?", answer: "Route missing foreign keys to a dedicated `Unknown Member (SK = -1)` dimension record and log the natural keys to `etl_quarantine`.", tip: "Deduplicate retries idempotently via `ROW_NUMBER() OVER (PARTITION BY id ORDER BY ts DESC) = 1`.", distractors: ["Silently DELETE all orphaned orders", "Disable foreign key constraints permanently", "Edit production tables manually in Excel"] },
+      { id: "FC-20", track: "CYBER", module: "NIST SP 800-61 • Lifecycle", prompt: "What are the four core phases of the NIST SP 800-61 Computer Security Incident Handling lifecycle?", answer: "1. Preparation, 2. Detection & Analysis, 3. Containment, Eradication & Recovery, 4. Post-Incident Activity (Lessons Learned).", tip: "Lessons Learned reviews should occur within days of major containment while evidence is fresh.", distractors: ["Recon, Weaponization, Delivery, Exploitation", "Identify, Protect, Detect, Respond", "Plan, Do, Check, Act"] },
+      { id: "FC-21", track: "CYBER", module: "RFC 3227 • Order of Volatility", prompt: "According to RFC 3227, what is the correct forensic collection sequence from most volatile to least volatile?", answer: "CPU registers/cache -> Routing tables/RAM -> Temporary filesystems -> Non-volatile SSD/HDD -> Remote Syslog -> Archival tape.", tip: "Always acquire RAM before shutting down a compromised system.", distractors: ["Archival tape -> HDD -> RAM -> CPU cache", "HDD -> RAM -> Registers -> Remote logs", "BIOS -> Tape -> RAM -> Network packets"] },
+      { id: "FC-22", track: "IT-OPS", module: "Microsoft Learn • AD CS PKI", prompt: "Why is an Offline Stand-Alone Root CA paired with an Enterprise Issuing Subordinate CA in two-tier PKI?", answer: "Keeping the Root CA powered off and disconnected protects the organization's highest trust anchor from network compromise.", tip: "If an Issuing Subordinate CA is compromised, the Offline Root CA can revoke it and issue a replacement.", distractors: ["Root CAs cannot issue certificates on Windows", "Offline Root CAs automatically renew public domains", "Subordinate CAs do not use private keys"] },
+      { id: "FC-23", track: "DATA", module: "Data Engineering • Idempotency", prompt: "What does 'Idempotency' mean in nightly ETL data pipelines?", answer: "Running the exact same pipeline batch multiple times produces the exact same target state without creating duplicate records.", tip: "Achieved via staging deduplication (`ROW_NUMBER()`) + atomic `MERGE` / `UPSERT` operations.", distractors: ["The pipeline deletes the target warehouse on every run", "Each retry doubles the row count", "Data is loaded without timestamps"] },
+      { id: "FC-24", track: "DATA", module: "ISO-8601 • Data Standardization", prompt: "Why do data engineers normalize mixed date formats (`11/19/2026` vs `19-11-2026`) into ISO-8601 (`YYYY-MM-DD`) during ingestion?", answer: "ISO-8601 eliminates regional MM/DD vs DD/MM ambiguity and ensures chronological lexicographical sorting.", tip: "Always store timestamps in UTC (`YYYY-MM-DDTHH:MM:SSZ`) inside analytical warehouses.", distractors: ["ISO-8601 uses Roman numerals for months", "Databases cannot index `DATE` columns", "MM/DD/YYYY is the global database standard"] }
+    ];
+
+    // =========================================================================
+    // 4. DATASET: 19 COURSE-TO-CAREER GUIDE MODULES
+    // =========================================================================
+    const CAREER_GUIDE_DATA = [
+      { id: "CYBER-01", track: "CYBER", title: "Security Foundations & Remote Workspace Hardening", classConcept: "CIA Triad (Confidentiality, Integrity, Availability) & Physical/Administrative Controls", jobApplication: "Auditing remote executive travel workflows, enforcing Always-On WireGuard/IPsec VPNs, HSTS policies, and physical display privacy filters.", standard: "NIST SP 800-46 / CIA Triad", resumeBullet: "Audited remote endpoint security postures against NIST SP 800-46, remediating cleartext Wi-Fi exposure via Always-On VPN, HSTS enforcement, and physical privacy controls." },
+      { id: "CYBER-02", track: "CYBER", title: "Identity Defense & AiTM Phishing Triage", classConcept: "Multi-Factor Authentication (MFA), Session Management & Social Engineering", jobApplication: "Investigating Impossible Travel alerts, detecting Evilginx2 reverse-proxy AiTM attacks, revoking stolen session cookies, and deploying FIDO2/WebAuthn Passkeys.", standard: "MITRE ATT&CK T1557 / FIDO2 WebAuthn", resumeBullet: "Triaged Adversary-in-the-Middle (AiTM) phishing incidents by revoking compromised refresh tokens and migrating high-risk finance accounts to phishing-resistant FIDO2 Passkeys." },
+      { id: "CYBER-03", track: "CYBER", title: "Infrastructure & Legacy Risk Remediation", classConcept: "Vulnerability Management, Patch Lifecycle & Cryptographic Protocols (TLS)", jobApplication: "Isolating End-of-Life Windows Server 2012 R2 / IIS 8.5 portals behind WAF virtual patches, segmenting Oracle DBs from DMZs, and deprecating TLS 1.0/1.1.", standard: "NIST SP 800-53 / CISA BOD 22-01", resumeBullet: "Remediated critical external attack surface exposures on legacy IIS and Oracle DB tiers by enforcing DMZ-to-private VLAN segmentation, WAF virtual patching, and TLS 1.2/1.3." },
+      { id: "CYBER-04", track: "CYBER", title: "Reconnaissance, OSINT & Engagement Boundaries", classConcept: "Passive vs. Active Reconnaissance & Vulnerability Scoring (CVSS/NVD)", jobApplication: "Discovering forgotten shadow subdomains via Shodan and Certificate Transparency logs, correlating banners to NVD CVEs, and strictly honoring Penetration Testing Rules of Engagement.", standard: "PTES / MITRE ATT&CK T1592 / NVD", resumeBullet: "Conducted passive OSINT attack-surface assessments using Certificate Transparency logs and Shodan to identify and decommission exposed staging servers and leaked `.git` directories." },
+      { id: "CYBER-05", track: "CYBER", title: "Network Security Architecture & NGFW Policy", classConcept: "OSI Model Layers 3–7, Stateless Packet Filters vs. Stateful/DPI Firewalls", jobApplication: "Detecting port-masquerading malware C2 beacons on TCP 443 and upgrading port-based ACLs to Layer 7 NGFW App-ID, IPS, and TLS decryption policies.", standard: "NIST SP 800-41 / OSI Layers 3–7", resumeBullet: "Hardened perimeter network defenses by migrating legacy port-based ACLs to Next-Generation Firewall (NGFW) Layer 7 App-ID policies, blocking covert TCP/443 C2 tunneling." },
+      { id: "CYBER-06", track: "CYBER", title: "Digital Forensics & Chain of Custody", classConcept: "Media Imaging, Cryptographic Hashing & Evidence Admissibility", jobApplication: "Preserving volatile RAM per RFC 3227, imaging seized NVMe drives via hardware write-blockers, verifying SHA-256 hashes, and maintaining air-gapped forensic lab VLANs.", standard: "NIST SP 800-86 / RFC 3227", resumeBullet: "Executed forensically sound disk and volatile memory acquisitions using hardware write-blockers, SHA-256 integrity validation, and isolated VLAN lab containment per NIST SP 800-86." },
+      { id: "CYBER-07", track: "CYBER", title: "Insider Threat & IAM Lifecycle Governance", classConcept: "Cyber Kill Chain, Principle of Least Privilege & Identity Lifecycle", jobApplication: "Containing post-termination cloud exfiltration (`aws s3 sync`), revoking orphaned static IAM/SSH keys, and automating HR-driven SCIM offboarding.", standard: "NIST SP 800-53 AC-2 / Cyber Kill Chain", resumeBullet: "Mitigated insider data exfiltration risks by eliminating static cloud IAM/SSH keys in favor of short-lived federated STS tokens and automated HRIS-to-IdP SCIM deprovisioning." },
+      { id: "CYBER-08", track: "CYBER", title: "Incident Response & Ransomware Containment", classConcept: "Incident Response Lifecycle & Endpoint Containment", jobApplication: "Executing EDR network quarantine without wiping volatile RAM encryption keys, disabling compromised backup service accounts, and recovering from immutable backups.", standard: "NIST SP 800-61 Rev. 2", resumeBullet: "Led NIST SP 800-61 ransomware containment drills—isolating infected hosts via EDR quarantine to preserve volatile memory while restoring clean workloads from immutable backups." },
+      { id: "CYBER-09", track: "CYBER", title: "Application & API Authorization Security", classConcept: "Web Application Security, Authentication vs. Authorization & OWASP Top 10", jobApplication: "Remediating Broken Object Level Authorization (BOLA/IDOR) in REST APIs by enforcing server-side JWT session ownership checks and UUIDv4 resource keys.", standard: "OWASP API Top 10 (API1:2023)", resumeBullet: "Remediated OWASP API1 Broken Object Level Authorization (BOLA/IDOR) flaws by implementing server-side JWT ownership validation, API rate limiting, and UUIDv4 identifiers." },
+      { id: "IT-OPS-01", track: "IT-OPS", title: "Branch Office RODC Architecture", classConcept: "Active Directory Domain Services (AD DS) Sites & Replication", jobApplication: "Deploying Read-Only Domain Controllers (RODCs) at low-physical-security branches with scoped Password Replication Policy (PRP) Allowed/Denied lists.", standard: "Microsoft Learn • AD DS RODC & PRP", resumeBullet: "Architected branch-office Read-Only Domain Controllers (RODCs) with scoped Password Replication Policies (PRP), enabling WAN-outage survivability while protecting Tier-0 credentials." },
+      { id: "IT-OPS-02", track: "IT-OPS", title: "GPO Inheritance & Internal PKI Trust", classConcept: "Group Policy Objects (LSDOU) & Public Key Infrastructure (PKI)", jobApplication: "Diagnosing blocked GPO inheritance with `gpresult /r`, enforcing Root CA certificate trust across OUs, and managing two-tier Offline Root / Issuing Subordinate CAs.", standard: "Microsoft Learn • GPO & AD CS", resumeBullet: "Resolved enterprise internal TLS trust failures by auditing LSDOU Group Policy precedence (`gpresult /r`) and enforcing AD CS Root/Subordinate CA certificate distribution." },
+      { id: "IT-OPS-03", track: "IT-OPS", title: "Windows Servicing & Virtualization Ops", classConcept: "Storage Architecture (SSD vs. HDD), OS Integrity & Hypervisor Management", jobApplication: "Replacing harmful SSD defrag jobs with weekly TRIM, repairing corrupted Windows binaries via `DISM` + `sfc /scannow`, and enforcing 72-hour VM snapshot hygiene.", standard: "Microsoft Learn • Windows & Hypervisor Ops", resumeBullet: "Restored endpoint and hypervisor stability by executing DISM/SFC system repairs, configuring automated SSD TRIM optimization, and eliminating stale multi-week VM delta snapshots." },
+      { id: "IT-OPS-04", track: "IT-OPS", title: "Linux Administration & SSH Hardening", classConcept: "Linux Filesystem Permissions (`chmod`/`chown`) & Remote Access Protocols", jobApplication: "Resolving OpenSSH `StrictModes` lockouts (`chmod 700 ~/.ssh`, `chmod 600 authorized_keys`), restoring RHEL SELinux contexts (`restorecon`), and enforcing Ed25519 keys.", standard: "RHEL Hardening / OpenSSH StrictModes", resumeBullet: "Administered RHEL 9 production servers by enforcing OpenSSH `StrictModes` permissions (`700`/`600`), SELinux file contexts (`restorecon`), and key-only Ed25519 authentication." },
+      { id: "IT-OPS-05", track: "IT-OPS", title: "Enterprise Networking & Split-Horizon DNS", classConcept: "DNS Resolution, Routing Metrics & VPN Tunneling", jobApplication: "Troubleshooting VPN internal zone `NXDOMAIN` leaks by configuring Split-Horizon DNS suffixes, Windows NRPT rules, and clearing stale resolver caches (`ipconfig /flushdns`).", standard: "Microsoft Learn / RFC 1035 Split-DNS", resumeBullet: "Resolved enterprise VPN internal domain resolution outages by implementing Split-Horizon DNS routing, Windows NRPT policies, and resolver cache remediation (`ipconfig /flushdns`)." },
+      { id: "DATA-01", track: "DATA", title: "Security Analytics & SQL Threat Hunting", classConcept: "Relational Querying, Grouping (`GROUP BY`) & Aggregate Filtering (`HAVING`)", jobApplication: "Querying multi-million-row SIEM `auth_logs` tables in SQL to isolate brute-force and password-spraying IP indicators for automated firewall blocking.", standard: "NIST SP 800-92 / ANSI SQL", resumeBullet: "Authored high-performance SQL threat-hunting queries over million-row authentication logs (`GROUP BY` / `HAVING`) to detect brute-force and password-spraying IPs." },
+      { id: "DATA-02", track: "DATA", title: "BI Data Modeling & Join Fan-Out Prevention", classConcept: "Relational Cardinality (1:1 vs. 1:Many) & Set Deduplication", jobApplication: "Diagnosing inflated executive BI dashboards caused by 1:Many joins and implementing `COUNT(DISTINCT)` and pre-aggregated CTEs to guarantee metric accuracy.", standard: "Relational Algebra / BI Semantics", resumeBullet: "Eliminated 6x BI dashboard metric inflation by diagnosing 1:Many join fan-out and refactoring semantic SQL views with `COUNT(DISTINCT)` and grain-aligned CTEs." },
+      { id: "DATA-03", track: "DATA", title: "Operational KPIs & Executive Storytelling", classConcept: "Service Level Metrics, Trend Analysis & Business Communication", jobApplication: "Translating Helpdesk First-Contact Resolution (FCR %), SSO ticket reduction ROI, and SOC MTTD/MTTR trends into actionable executive governance briefs.", standard: "ITIL 4 / NIST SP 800-61 Metrics", resumeBullet: "Built executive IT & SOC operational scorecards tracking First-Contact Resolution (74% FCR), SSO/MFA ticket reduction (-68%), and MTTD/MTTR SLA performance." },
+      { id: "DATA-04", track: "DATA", title: "Dimensional Modeling & Warehouse Grain", classConcept: "Star Schemas, Fact vs. Dimension Tables & Bridge Tables", jobApplication: "Resolving Q3 warehouse revenue overstatements caused by joining line-item `Fact_Sales` to multi-valued `Dim_Promotions` using Kimball grain rules and Bridge Tables.", standard: "Kimball Dimensional Modeling", resumeBullet: "Audited and refactored enterprise Star Schema models using Kimball dimensional grain enforcement and Bridge Tables, resolving a $4.4M revenue fan-out discrepancy." },
+      { id: "DATA-05", track: "DATA", title: "Data Engineering & Quality Governance", classConcept: "ETL/ELT Pipelines, Deduplication & Referential Integrity Constraints", jobApplication: "Building idempotent ETL staging gates with `ROW_NUMBER()` deduplication, ISO-8601 date standardization, `Unknown SK = -1` surrogate keys, and `etl_quarantine` auditing.", standard: "DAMA-DMBOK2 / Idempotent ETL", resumeBullet: "Engineered idempotent ETL data quality gates aligned with DAMA-DMBOK2 using `ROW_NUMBER()` deduplication, ISO-8601 casting, and `etl_quarantine` foreign-key auditing." }
+    ];
+
+    // =========================================================================
+    // 5. APPLICATION STATE & PERSISTENCE (localStorage)
+    // =========================================================================
+    const STORAGE_KEY = 'tech_career_lab_v1_1_state';
+
+    let appState = {
+      theme: 'dark',
+      trackFilter: 'ALL',
+      activeTab: 'labs',
+      labStatusFilter: 'ALL',
+      // Tracks user progress per lab: { "CYBER-01": { currentStage: 0, completed: false, answers: {} } }
+      labsProgress: {},
+      // Tracks solved sandbox IDs: ["SBX-01", ...]
+      sandboxSolved: [],
+      activeSandboxId: 'SBX-01',
+      // Flashcards state
+      flashMode: 'DECK',
+      flashIndex: 0,
+      flashFlipped: false,
+      flashMastered: [],
+      flashOrder: FLASHCARDS_DATA.map((_, idx) => idx),
+      // Quiz state
+      quizQuestions: [],
+      quizIndex: 0,
+      quizScore: 0,
+      quizAnswered: null
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          appState = { ...appState, ...parsed };
+        }
+      } catch (e) {
+        console.warn('Could not load saved state:', e);
+      }
+      applyTheme(appState.theme);
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          theme: appState.theme,
+          labsProgress: appState.labsProgress,
+          sandboxSolved: appState.sandboxSolved,
+          flashMastered: appState.flashMastered
+        }));
+      } catch (e) {
+        console.warn('Could not save state:', e);
+      }
+      updateHeaderTelemetry();
+    }
+
+    // =========================================================================
+    // 6. THEME, TOASTS & TELEMETRY CALCULATIONS
+    // =========================================================================
+    function applyTheme(theme) {
+      appState.theme = theme;
+      const html = document.documentElement;
+      if (theme === 'dark') {
+        html.classList.add('dark');
+      } else {
+        html.classList.remove('dark');
+      }
+    }
+
+    function toggleTheme() {
+      const next = appState.theme === 'dark' ? 'light' : 'dark';
+      applyTheme(next);
+      saveState();
+      showToast(`Switched to ${next === 'dark' ? 'Midnight Obsidian' : 'Alabaster Daylight'} theme`);
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      const colors = {
+        info: 'bg-slate-900 text-white border-cyber/50',
+        success: 'bg-emerald-950 text-emerald-100 border-itops',
+        warn: 'bg-amber-950 text-amber-100 border-data'
+      };
+      el.className = `pointer-events-auto px-4 py-2.5 rounded-xl border shadow-xl text-xs sm:text-sm font-medium transition-all duration-300 ${colors[type] || colors.info}`;
+      el.textContent = message;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(8px)';
+        setTimeout(() => el.remove(), 300);
+      }, 2800);
+    }
+
+    function computeStats() {
+      const labsDone = LABS_DATA.filter(l => appState.labsProgress[l.id]?.completed).length;
+      const sbxDone = appState.sandboxSolved.length;
+      const cardsDone = appState.flashMastered.length;
+
+      const xp = (labsDone * 150) + (sbxDone * 100) + (cardsDone * 25);
+      const totalCompleted = labsDone + sbxDone + cardsDone;
+      const totalItems = LABS_DATA.length + SANDBOX_DATA.length + FLASHCARDS_DATA.length; // 19 + 12 + 24 = 55
+
+      let rank = 'Tier 1 Trainee';
+      if (xp >= 3400) rank = 'Principal Architect';
+      else if (xp >= 2000) rank = 'Systems Defender';
+      else if (xp >= 750) rank = 'Associate Analyst';
+
+      return { labsDone, sbxDone, cardsDone, xp, totalCompleted, totalItems, rank };
+    }
+
+    function updateHeaderTelemetry() {
+      const stats = computeStats();
+      document.getElementById('header-xp').textContent = stats.xp.toLocaleString();
+      document.getElementById('header-rank').textContent = stats.rank;
+      document.getElementById('header-progress').textContent = `${stats.totalCompleted}/${stats.totalItems}`;
+
+      const sbxCounter = document.getElementById('sandbox-solved-counter');
+      if (sbxCounter) sbxCounter.textContent = `${stats.sbxDone} / ${SANDBOX_DATA.length}`;
+    }
+
+    function getTrackBadgeHTML(track) {
+      if (track === 'CYBER') {
+        return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-mono font-bold bg-cyber/15 text-cyber border border-cyber/30">CYBER</span>`;
+      }
+      if (track === 'IT-OPS') {
+        return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-mono font-bold bg-itops/15 text-itops border border-itops/30">IT-OPS</span>`;
+      }
+      return `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-mono font-bold bg-data/15 text-data border border-data/30">DATA</span>`;
+    }
+
+    // =========================================================================
+    // 7. GLOBAL TRACK FILTERING & TAB NAVIGATION
+    // =========================================================================
+    function setTrackFilter(track) {
+      appState.trackFilter = track;
+      document.querySelectorAll('.track-pill').forEach(btn => {
+        const t = btn.getAttribute('data-track');
+        if (t === track) {
+          btn.className = 'track-pill px-3 py-1.5 rounded-xl text-xs font-bold bg-cyber text-white shadow-sm transition shrink-0 cursor-pointer';
+        } else {
+          btn.className = 'track-pill px-3 py-1.5 rounded-xl text-xs font-semibold border theme-card theme-muted hover:border-cyber/50 transition shrink-0 cursor-pointer';
+        }
+      });
+
+      // Update badge counts across tabs dynamically
+      const filteredLabs = filterByTrack(LABS_DATA);
+      const filteredSbx = filterByTrack(SANDBOX_DATA);
+      const filteredCards = filterByTrack(FLASHCARDS_DATA);
+      const filteredCareer = filterByTrack(CAREER_GUIDE_DATA);
+
+      document.getElementById('badge-count-labs').textContent = filteredLabs.length;
+      document.getElementById('badge-count-sandbox').textContent = filteredSbx.length;
+      document.getElementById('badge-count-flashcards').textContent = filteredCards.length;
+      document.getElementById('badge-count-career').textContent = filteredCareer.length;
+
+      // Ensure active sandbox item matches filter
+      if (filteredSbx.length > 0 && !filteredSbx.some(s => s.id === appState.activeSandboxId)) {
+        appState.activeSandboxId = filteredSbx[0].id;
+      }
+
+      // Reset flashcard order to filtered set
+      appState.flashOrder = filteredCards.map(c => FLASHCARDS_DATA.findIndex(orig => orig.id === c.id));
+      appState.flashIndex = 0;
+      appState.flashFlipped = false;
+
+      renderAllViews();
+    }
+
+    function filterByTrack(arr) {
+      if (appState.trackFilter === 'ALL') return arr;
+      return arr.filter(item => item.track === appState.trackFilter);
+    }
+
+    function switchTab(tabName) {
+      appState.activeTab = tabName;
+      document.querySelectorAll('.tab-view').forEach(sec => sec.classList.add('hidden'));
+      document.getElementById(`view-${tabName}`).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-tab').forEach(btn => {
+        if (btn.id === `tab-btn-${tabName}`) {
+          btn.className = 'nav-tab px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-sm transition shrink-0 cursor-pointer flex items-center gap-1.5';
+        } else {
+          btn.className = 'nav-tab px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border theme-card theme-muted hover:border-cyber/50 transition shrink-0 cursor-pointer flex items-center gap-1.5';
+        }
+      });
+
+      renderAllViews();
+    }
+
+    function renderAllViews() {
+      renderLabs();
+      renderSandbox();
+      renderFlashcards();
+      renderCareerGuide();
+      updateHeaderTelemetry();
+    }
+
+    // =========================================================================
+    // 8. TAB 1 RENDERER: 19 INCIDENT & TICKET LABS
+    // =========================================================================
+    function filterLabsStatus(status) {
+      appState.labStatusFilter = status;
+      ['ALL', 'PENDING', 'DONE'].forEach(st => {
+        const el = document.getElementById(`lab-status-${st.toLowerCase()}`);
+        if (st === status) {
+          el.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-cyber text-white cursor-pointer';
+        } else {
+          el.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold border theme-border theme-card theme-muted cursor-pointer';
+        }
+      });
+      renderLabs();
+    }
+
+    function renderLabs() {
+      const container = document.getElementById('labs-container');
+      let list = filterByTrack(LABS_DATA);
+
+      if (appState.labStatusFilter === 'DONE') {
+        list = list.filter(l => appState.labsProgress[l.id]?.completed);
+      } else if (appState.labStatusFilter === 'PENDING') {
+        list = list.filter(l => !appState.labsProgress[l.id]?.completed);
+      }
+
+      if (list.length === 0) {
+        container.innerHTML = `<div class="p-8 rounded-2xl border theme-card text-center theme-muted text-sm">No labs match the selected track and status filter.</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(lab => {
+        const prog = appState.labsProgress[lab.id] || { currentStage: 0, completed: false, answers: {} };
+        const isCompleted = prog.completed;
+
+        // Build 3-stage interactive stepper
+        const stagesHTML = lab.stages.map((stage, sIdx) => {
+          const savedAns = prog.answers[sIdx];
+          const isUnlocked = sIdx <= prog.currentStage || isCompleted;
+
+          if (!isUnlocked) {
+            return `
+              <div class="p-3.5 rounded-xl border theme-border opacity-55 flex items-center justify-between">
+                <span class="text-xs font-semibold">🔒 ${stage.label}</span>
+                <span class="text-[11px] font-mono theme-muted">Complete previous stage to unlock</span>
+              </div>
+            `;
+          }
+
+          const optionsHTML = stage.options.map((opt, oIdx) => {
+            const isChosen = savedAns && savedAns.selectedIdx === oIdx;
+            let btnClass = 'border theme-border theme-subcard hover:border-cyber/60';
+            if (isChosen) {
+              btnClass = opt.correct
+                ? 'border-itops bg-itops/15 text-emerald-950 dark:text-emerald-100'
+                : 'border-crimson bg-crimson/15 text-rose-950 dark:text-rose-100';
+            }
+
+            return `
+              <button onclick="answerLabStage('${lab.id}', ${sIdx}, ${oIdx})"
+                class="w-full text-left p-3 rounded-xl border text-xs sm:text-sm transition cursor-pointer flex items-start gap-2.5 ${btnClass}">
+                <span class="font-mono font-bold mt-0.5 shrink-0">${String.fromCharCode(65 + oIdx)}.</span>
+                <span class="flex-1">${opt.text}</span>
+              </button>
+              ${isChosen ? `
+                <div class="mt-1.5 mb-2 px-3 py-2 rounded-lg text-xs font-medium ${opt.correct ? 'bg-itops/15 text-itops border border-itops/30' : 'bg-crimson/15 text-crimson border border-crimson/30'}">
+                  ${opt.correct ? '✅ ' : '⚠️ '} ${opt.feedback}
+                </div>
+              ` : ''}
+            `;
+          }).join('');
+
+          return `
+            <div class="p-4 rounded-xl border theme-border theme-card space-y-2.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-cyber">${stage.label}</span>
+                ${savedAns?.correct ? '<span class="text-xs font-bold text-itops">✓ Stage Cleared</span>' : ''}
+              </div>
+              <p class="text-xs sm:text-sm font-semibold">${stage.question}</p>
+              <div class="space-y-2 pt-1">${optionsHTML}</div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <article class="rounded-2xl border ${isCompleted ? 'border-itops/60' : 'theme-border'} theme-card p-5 sm:p-6 shadow-sm space-y-4">
+            <!-- Card Header Metadata -->
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex flex-wrap items-center gap-2">
+                ${getTrackBadgeHTML(lab.track)}
+                <span class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-lg theme-subcard border theme-border">${lab.id}</span>
+                <span class="text-xs theme-muted font-medium">${lab.module}</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-[11px] font-mono px-2.5 py-0.5 rounded-lg bg-slate-500/10 border theme-border theme-muted">
+                  📘 ${lab.framework}
+                </span>
+                <span class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-lg ${isCompleted ? 'bg-itops text-white' : 'bg-amber-500/15 text-amber-500 border border-amber-500/30'}">
+                  ${isCompleted ? '✓ SOLVED (+150 XP)' : `+${lab.xp} XP`}
+                </span>
+              </div>
+            </div>
+
+            <!-- Title & Workplace Ticket -->
+            <div>
+              <h3 class="text-base sm:text-lg font-bold">${lab.title}</h3>
+              <p class="text-xs sm:text-sm theme-muted mt-1.5 leading-relaxed">${lab.ticket}</p>
+            </div>
+
+            <!-- Monospace Raw Telemetry / Log Block -->
+            <div class="rounded-xl bg-[#090B10] text-emerald-400 border border-slate-800 p-3.5 font-mono text-xs overflow-x-auto leading-relaxed">
+              <div class="text-[10px] uppercase tracking-widest text-slate-500 mb-1.5 flex items-center justify-between">
+                <span>LIVE SIEM / SYSTEM TELEMETRY</span>
+                <span>READ-ONLY</span>
+              </div>
+              <pre class="whitespace-pre-wrap">${lab.telemetry}</pre>
+            </div>
+
+            <!-- Collapsible 1-Click Quick Field Guide Drawer -->
+            <div class="rounded-xl border border-cyber/30 bg-cyber/5 overflow-hidden">
+              <button onclick="toggleFieldGuide('${lab.id}')" class="w-full px-4 py-2.5 flex items-center justify-between text-left text-xs sm:text-sm font-semibold text-cyber hover:bg-cyber/10 transition cursor-pointer">
+                <span class="flex items-center gap-2">
+                  <span>🧭 Quick Field Guide (${lab.framework})</span>
+                </span>
+                <span id="fg-arrow-${lab.id}" class="font-mono text-xs">[+ Expand Rules]</span>
+              </button>
+              <div id="fg-body-${lab.id}" class="hidden px-4 pb-3.5 pt-1 border-t border-cyber/20">
+                <ul class="list-disc list-inside space-y-1.5 text-xs sm:text-sm theme-muted">
+                  ${lab.fieldGuide.map(rule => `<li>${rule}</li>`).join('')}
+                </ul>
+              </div>
+            </div>
+
+            <!-- 3-Stage Decision Workflow -->
+            <div class="space-y-3 pt-1">
+              ${stagesHTML}
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function toggleFieldGuide(labId) {
+      const body = document.getElementById(`fg-body-${labId}`);
+      const arrow = document.getElementById(`fg-arrow-${labId}`);
+      const isHidden = body.classList.contains('hidden');
+      if (isHidden) {
+        body.classList.remove('hidden');
+        arrow.textContent = '[- Hide Rules]';
+      } else {
+        body.classList.add('hidden');
+        arrow.textContent = '[+ Expand Rules]';
+      }
+    }
+
+    function answerLabStage(labId, stageIdx, optionIdx) {
+      const lab = LABS_DATA.find(l => l.id === labId);
+      if (!lab) return;
+
+      if (!appState.labsProgress[labId]) {
+        appState.labsProgress[labId] = { currentStage: 0, completed: false, answers: {} };
+      }
+      const prog = appState.labsProgress[labId];
+      const option = lab.stages[stageIdx].options[optionIdx];
+
+      prog.answers[stageIdx] = { selectedIdx: optionIdx, correct: option.correct };
+
+      if (option.correct) {
+        if (stageIdx < lab.stages.length - 1) {
+          prog.currentStage = Math.max(prog.currentStage, stageIdx + 1);
+          showToast(`Stage ${stageIdx + 1} cleared! Next stage unlocked.`, 'success');
+        } else if (!prog.completed) {
+          prog.completed = true;
+          showToast(`🎉 ${lab.id} Completed! +${lab.xp} XP banked!`, 'success');
+        }
+      } else {
+        showToast('Not quite — review the telemetry & Quick Field Guide and try again.', 'warn');
+      }
+
+      saveState();
+      renderLabs();
+    }
+
+    // =========================================================================
+    // 9. TAB 2 RENDERER: 12 CLI & SQL SANDBOX CHALLENGES
+    // =========================================================================
+    function renderSandbox() {
+      const listEl = document.getElementById('sandbox-list');
+      const workbenchEl = document.getElementById('sandbox-workbench');
+      const filtered = filterByTrack(SANDBOX_DATA);
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<div class="p-4 rounded-xl border theme-card text-xs theme-muted">No sandbox drills for this track.</div>`;
+        workbenchEl.innerHTML = '';
+        return;
+      }
+
+      listEl.innerHTML = filtered.map((item, idx) => {
+        const isSolved = appState.sandboxSolved.includes(item.id);
+        const isActive = item.id === appState.activeSandboxId;
+        return `
+          <button onclick="selectSandbox('${item.id}')"
+            class="w-full text-left p-3.5 rounded-xl border transition cursor-pointer flex items-center justify-between gap-3 ${isActive ? 'border-cyber bg-cyber/10' : 'theme-card hover:border-cyber/40'}">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                ${getTrackBadgeHTML(item.track)}
+                <span class="font-mono text-xs font-bold">${item.id}</span>
+              </div>
+              <div class="text-xs sm:text-sm font-semibold">${item.title}</div>
+            </div>
+            <span class="text-xs font-mono font-bold shrink-0 ${isSolved ? 'text-itops' : 'theme-muted'}">
+              ${isSolved ? '✓ +100 XP' : 'Run >'}
+            </span>
+          </button>
+        `;
+      }).join('');
+
+      const active = filtered.find(s => s.id === appState.activeSandboxId) || filtered[0];
+      const isSolved = appState.sandboxSolved.includes(active.id);
+
+      workbenchEl.innerHTML = `
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b theme-border pb-3">
+          <div class="flex items-center gap-2">
+            ${getTrackBadgeHTML(active.track)}
+            <h3 class="font-bold text-base sm:text-lg">${active.id}: ${active.title}</h3>
+          </div>
+          <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-lg ${isSolved ? 'bg-itops text-white' : 'bg-itops/15 text-itops'}">
+            ${isSolved ? '✓ Completed (+100 XP)' : '+100 XP'}
+          </span>
+        </div>
+
+        <div class="text-xs font-mono px-3 py-2 rounded-xl theme-subcard border theme-border theme-muted">
+          🖥️ Environment: <span class="text-cyber font-semibold">${active.env}</span>
+        </div>
+
+        <p class="text-xs sm:text-sm leading-relaxed">${active.prompt}</p>
+
+        <!-- Clickable Syntax Helper Chips -->
+        <div>
+          <span class="text-[11px] uppercase tracking-wider theme-muted font-semibold block mb-1.5">Quick-Insert Syntax Chips:</span>
+          <div class="flex flex-wrap gap-1.5">
+            ${active.chips.map(chip => `
+              <button onclick="insertSandboxChip('${chip.replace(/'/g, "\\'")}')"
+                class="px-2.5 py-1 rounded-lg font-mono text-xs border theme-border theme-subcard hover:border-cyber hover:text-cyber transition cursor-pointer">
+                + ${chip}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Simulated Terminal / SQL Input -->
+        <div class="rounded-xl bg-[#090B10] border border-slate-800 p-4 space-y-3">
+          <div class="flex items-center justify-between text-[11px] font-mono text-slate-400">
+            <span>${active.track === 'DATA' ? 'sql-warehouse>' : 'operator@lab-shell:~$'}</span>
+            <span>Enter command or query below</span>
+          </div>
+          <textarea id="sandbox-input" rows="2" placeholder="Type command or SQL query..."
+            class="w-full bg-transparent text-emerald-400 font-mono text-xs sm:text-sm focus:outline-none resize-none"></textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <button onclick="runSandboxCommand('${active.id}')" class="px-4 py-2 rounded-xl bg-itops hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm shadow-md shadow-itops/20 cursor-pointer">
+              ▶ Run Command / Query
+            </button>
+            <button onclick="toggleSandboxHint()" class="px-3 py-2 rounded-xl border theme-card hover:border-cyber text-xs font-semibold cursor-pointer">
+              💡 Show Field Hint
+            </button>
+          </div>
+          <button onclick="loadSandboxSolution('${active.id}')" class="px-3 py-2 rounded-xl border theme-border theme-subcard hover:border-amber-500 text-xs font-mono theme-muted cursor-pointer">
+            Load Solution
+          </button>
+        </div>
+
+        <!-- Field Hint Box -->
+        <div id="sandbox-hint-box" class="hidden p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-600 dark:text-amber-300">
+          <strong>Field Hint:</strong> ${active.hint}
+        </div>
+
+        <!-- Simulated Output Console -->
+        <div id="sandbox-output-box" class="${isSolved ? '' : 'hidden'} rounded-xl bg-[#07090D] border border-slate-800 p-3.5 font-mono text-xs text-slate-200 overflow-x-auto">
+          <div class="text-[10px] uppercase tracking-widest text-itops mb-1">STDOUT / QUERY RESULT</div>
+          <pre id="sandbox-output-pre" class="whitespace-pre-wrap">${isSolved ? active.output : ''}</pre>
+        </div>
+      `;
+    }
+
+    function selectSandbox(id) {
+      appState.activeSandboxId = id;
+      renderSandbox();
+    }
+
+    function insertSandboxChip(chip) {
+      const input = document.getElementById('sandbox-input');
+      if (!input) return;
+      const cur = input.value.trim();
+      input.value = cur ? `${cur} ${chip}` : chip;
+      input.focus();
+    }
+
+    function toggleSandboxHint() {
+      const box = document.getElementById('sandbox-hint-box');
+      if (box) box.classList.toggle('hidden');
+    }
+
+    function loadSandboxSolution(id) {
+      const item = SANDBOX_DATA.find(s => s.id === id);
+      const input = document.getElementById('sandbox-input');
+      if (item && input) {
+        input.value = item.solution;
+        showToast('Solution loaded into terminal — click Run to execute.');
+      }
+    }
+
+    function runSandboxCommand(id) {
+      const item = SANDBOX_DATA.find(s => s.id === id);
+      const input = document.getElementById('sandbox-input');
+      const outBox = document.getElementById('sandbox-output-box');
+      const outPre = document.getElementById('sandbox-output-pre');
+      if (!item || !input) return;
+
+      const userCmd = input.value.trim();
+      if (!userCmd) {
+        showToast('Enter a command or SQL query first.', 'warn');
+        return;
+      }
+
+      outBox.classList.remove('hidden');
+      if (item.validate(userCmd)) {
+        outPre.className = 'whitespace-pre-wrap text-emerald-400';
+        outPre.textContent = item.output;
+        if (!appState.sandboxSolved.includes(item.id)) {
+          appState.sandboxSolved.push(item.id);
+          saveState();
+          showToast(`✅ ${item.id} Verified! +100 XP banked!`, 'success');
+          renderSandbox();
+          // Keep command visible after re-render
+          const freshInput = document.getElementById('sandbox-input');
+          if (freshInput) freshInput.value = userCmd;
+        } else {
+          showToast('Command executed successfully!', 'success');
+        }
+      } else {
+        outPre.className = 'whitespace-pre-wrap text-rose-400';
+        outPre.textContent = `[STDERR] Unexpected syntax or missing required flags for ${item.id}.\nExecuted: ${userCmd}\nTip: Click "Show Field Hint" or use the Quick-Insert Syntax Chips above.`;
+        showToast('Command syntax did not match expected diagnostic target.', 'warn');
+      }
+    }
+
+    // =========================================================================
+    // 10. TAB 3 RENDERER: 24 FLASHCARDS & TIMED RAPID-TRIAGE QUIZ
+    // =========================================================================
+    function setFlashMode(mode) {
+      appState.flashMode = mode;
+      const deckView = document.getElementById('flash-deck-view');
+      const quizView = document.getElementById('flash-quiz-view');
+      const btnDeck = document.getElementById('btn-mode-deck');
+      const btnQuiz = document.getElementById('btn-mode-quiz');
+
+      if (mode === 'DECK') {
+        deckView.classList.remove('hidden');
+        quizView.classList.add('hidden');
+        btnDeck.className = 'px-4 py-1.5 rounded-lg text-xs font-bold bg-cyber text-white transition cursor-pointer';
+        btnQuiz.className = 'px-4 py-1.5 rounded-lg text-xs font-bold theme-muted hover:text-cyber transition cursor-pointer';
+        renderFlashcards();
+      } else {
+        deckView.classList.add('hidden');
+        quizView.classList.remove('hidden');
+        btnQuiz.className = 'px-4 py-1.5 rounded-lg text-xs font-bold bg-cyber text-white transition cursor-pointer';
+        btnDeck.className = 'px-4 py-1.5 rounded-lg text-xs font-bold theme-muted hover:text-cyber transition cursor-pointer';
+        startRapidQuiz();
+      }
+    }
+
+    function renderFlashcards() {
+      if (appState.flashOrder.length === 0) {
+        appState.flashOrder = filterByTrack(FLASHCARDS_DATA).map(c => FLASHCARDS_DATA.findIndex(o => o.id === c.id));
+      }
+      const total = appState.flashOrder.length;
+      if (total === 0) return;
+
+      if (appState.flashIndex >= total) appState.flashIndex = 0;
+      const card = FLASHCARDS_DATA[appState.flashOrder[appState.flashIndex]];
+      const isMastered = appState.flashMastered.includes(card.id);
+
+      document.getElementById('flash-counter').textContent = `Card ${appState.flashIndex + 1} of ${total}`;
+      document.getElementById('flash-mastered-count').textContent = `Mastered: ${appState.flashMastered.length}/${FLASHCARDS_DATA.length}`;
+
+      const inner = document.getElementById('flashcard-inner');
+      if (appState.flashFlipped) inner.classList.add('is-flipped');
+      else inner.classList.remove('is-flipped');
+
+      document.getElementById('fc-front-badge').textContent = `${card.id} • ${card.track}`;
+      document.getElementById('fc-front-framework').textContent = card.module;
+      document.getElementById('fc-front-text').textContent = card.prompt;
+
+      document.getElementById('fc-back-badge').textContent = card.id;
+      document.getElementById('fc-back-answer').textContent = card.answer;
+      document.getElementById('fc-back-tip').textContent = `💡 Field Takeaway: ${card.tip}`;
+
+      const pill = document.getElementById('fc-mastered-pill');
+      const btnMastered = document.getElementById('btn-mark-mastered');
+      if (isMastered) {
+        pill.classList.remove('hidden');
+        btnMastered.textContent = '✓ Mastered (+25 XP)';
+        btnMastered.className = 'px-5 py-2.5 rounded-xl bg-slate-700 text-emerald-300 font-bold text-xs sm:text-sm cursor-pointer';
+      } else {
+        pill.classList.add('hidden');
+        btnMastered.textContent = '✓ Mark Mastered (+25 XP)';
+        btnMastered.className = 'px-5 py-2.5 rounded-xl bg-itops hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm shadow-md shadow-itops/20 cursor-pointer';
+      }
+    }
+
+    function flipCard() {
+      appState.flashFlipped = !appState.flashFlipped;
+      renderFlashcards();
+    }
+
+    function nextCard() {
+      appState.flashFlipped = false;
+      appState.flashIndex = (appState.flashIndex + 1) % appState.flashOrder.length;
+      renderFlashcards();
+    }
+
+    function prevCard() {
+      appState.flashFlipped = false;
+      appState.flashIndex = (appState.flashIndex - 1 + appState.flashOrder.length) % appState.flashOrder.length;
+      renderFlashcards();
+    }
+
+    function shuffleFlashcards() {
+      for (let i = appState.flashOrder.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [appState.flashOrder[i], appState.flashOrder[j]] = [appState.flashOrder[j], appState.flashOrder[i]];
+      }
+      appState.flashIndex = 0;
+      appState.flashFlipped = false;
+      renderFlashcards();
+      showToast('Deck shuffled!');
+    }
+
+    function toggleCardMastered() {
+      const card = FLASHCARDS_DATA[appState.flashOrder[appState.flashIndex]];
+      if (!appState.flashMastered.includes(card.id)) {
+        appState.flashMastered.push(card.id);
+        saveState();
+        showToast(`⚡ ${card.id} Mastered! +25 XP banked!`, 'success');
+      } else {
+        appState.flashMastered = appState.flashMastered.filter(id => id !== card.id);
+        saveState();
+      }
+      renderFlashcards();
+    }
+
+    // Rapid-Triage Quiz Engine
+    function startRapidQuiz() {
+      const pool = filterByTrack(FLASHCARDS_DATA);
+      const shuffled = [...pool].sort(() => Math.random() - 0.5).slice(0, Math.min(8, pool.length));
+      appState.quizQuestions = shuffled.map(card => {
+        const choices = [
+          { text: card.answer, correct: true },
+          ...card.distractors.map(d => ({ text: d, correct: false }))
+        ].sort(() => Math.random() - 0.5);
+        return { card, choices };
+      });
+      appState.quizIndex = 0;
+      appState.quizScore = 0;
+      appState.quizAnswered = null;
+      renderRapidQuiz();
+    }
+
+    function renderRapidQuiz() {
+      const stage = document.getElementById('quiz-stage');
+      if (appState.quizIndex >= appState.quizQuestions.length) {
+        const total = appState.quizQuestions.length;
+        const pct = Math.round((appState.quizScore / total) * 100);
+        stage.innerHTML = `
+          <div class="text-center space-y-4 py-4">
+            <div class="text-4xl">🏆</div>
+            <h3 class="text-xl font-extrabold">Rapid-Triage Drill Complete!</h3>
+            <p class="text-sm theme-muted">You scored <strong class="text-itops">${appState.quizScore} / ${total} (${pct}%)</strong> across live operational scenarios.</p>
+            <button onclick="startRapidQuiz()" class="px-5 py-2.5 rounded-xl bg-cyber hover:bg-violet-600 text-white font-bold text-xs sm:text-sm cursor-pointer">
+              🔄 Run Another Rapid-Triage Drill
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const q = appState.quizQuestions[appState.quizIndex];
+      const answered = appState.quizAnswered;
+
+      stage.innerHTML = `
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span class="theme-muted">Question ${appState.quizIndex + 1} of ${appState.quizQuestions.length}</span>
+          <span class="font-bold text-itops">Score: ${appState.quizScore}</span>
+        </div>
+        <div class="space-y-1">
+          <span class="text-xs font-mono text-cyber font-bold">${q.card.module}</span>
+          <h3 class="text-base sm:text-lg font-bold">${q.card.prompt}</h3>
+        </div>
+        <div class="space-y-2.5">
+          ${q.choices.map((ch, idx) => {
+            let cls = 'border theme-border theme-subcard hover:border-cyber';
+            if (answered !== null) {
+              if (ch.correct) cls = 'border-itops bg-itops/15 font-semibold';
+              else if (idx === answered) cls = 'border-crimson bg-crimson/15';
+            }
+            return `
+              <button ${answered !== null ? 'disabled' : ''} onclick="submitQuizAnswer(${idx})"
+                class="w-full text-left p-3.5 rounded-xl border text-xs sm:text-sm transition cursor-pointer ${cls}">
+                ${ch.text}
+              </button>
+            `;
+          }).join('')}
+        </div>
+        ${answered !== null ? `
+          <div class="p-3.5 rounded-xl theme-subcard border theme-border text-xs space-y-2">
+            <div><strong>Verified Takeaway:</strong> ${q.card.tip}</div>
+            <button onclick="nextQuizQuestion()" class="px-4 py-2 rounded-xl bg-cyber text-white font-bold text-xs cursor-pointer">
+              Next Question &rarr;
+            </button>
+          </div>
+        ` : ''}
+      `;
+    }
+
+    function submitQuizAnswer(idx) {
+      if (appState.quizAnswered !== null) return;
+      appState.quizAnswered = idx;
+      const q = appState.quizQuestions[appState.quizIndex];
+      if (q.choices[idx].correct) {
+        appState.quizScore++;
+        if (!appState.flashMastered.includes(q.card.id)) {
+          appState.flashMastered.push(q.card.id);
+          saveState();
+        }
+      }
+      renderRapidQuiz();
+    }
+
+    function nextQuizQuestion() {
+      appState.quizIndex++;
+      appState.quizAnswered = null;
+      renderRapidQuiz();
+    }
+
+    // =========================================================================
+    // 11. TAB 4 RENDERER: COURSE-TO-CAREER GUIDE (ALL 19 MODULES)
+    // =========================================================================
+    function renderCareerGuide() {
+      const container = document.getElementById('career-container');
+      const query = (document.getElementById('career-search')?.value || '').toLowerCase().trim();
+      let items = filterByTrack(CAREER_GUIDE_DATA);
+
+      if (query) {
+        items = items.filter(m =>
+          m.id.toLowerCase().includes(query) ||
+          m.title.toLowerCase().includes(query) ||
+          m.classConcept.toLowerCase().includes(query) ||
+          m.jobApplication.toLowerCase().includes(query) ||
+          m.standard.toLowerCase().includes(query) ||
+          m.resumeBullet.toLowerCase().includes(query)
+        );
+      }
+
+      if (items.length === 0) {
+        container.innerHTML = `<div class="md:col-span-2 p-8 rounded-2xl border theme-card text-center theme-muted text-sm">No curriculum modules matched your search.</div>`;
+        return;
+      }
+
+      container.innerHTML = items.map(mod => {
+        const isLabSolved = appState.labsProgress[mod.id]?.completed;
+        return `
+          <div class="rounded-2xl border theme-card p-5 flex flex-col justify-between gap-4 shadow-sm">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  ${getTrackBadgeHTML(mod.track)}
+                  <span class="font-mono text-xs font-bold">${mod.id}</span>
+                </div>
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded-md theme-subcard border theme-border theme-muted">
+                  ${mod.standard}
+                </span>
+              </div>
+
+              <h3 class="text-base font-bold flex items-center gap-2">
+                <span>${mod.title}</span>
+                ${isLabSolved ? '<span title="Lab Completed" class="text-itops text-xs">✓</span>' : ''}
+              </h3>
+
+              <div class="space-y-2 text-xs leading-relaxed">
+                <div class="p-2.5 rounded-xl theme-subcard border theme-border">
+                  <span class="font-bold text-cyber block mb-0.5">📚 What You Read in Class:</span>
+                  <span class="theme-muted">${mod.classConcept}</span>
+                </div>
+                <div class="p-2.5 rounded-xl theme-subcard border theme-border">
+                  <span class="font-bold text-itops block mb-0.5">💼 How You Apply It on the Job:</span>
+                  <span class="theme-muted">${mod.jobApplication}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Resume-Ready Bullet Box -->
+            <div class="pt-3 border-t theme-border space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] uppercase tracking-wider font-bold text-amber-500">📄 Resume-Ready Bullet Point</span>
+                <button onclick="copyResumeBullet('${mod.id}')" class="px-2.5 py-1 rounded-lg bg-cyber/15 hover:bg-cyber hover:text-white text-cyber font-semibold text-xs transition cursor-pointer">
+                  📋 Copy Bullet
+                </button>
+              </div>
+              <p id="resume-text-${mod.id}" class="text-xs italic theme-muted bg-black/5 dark:bg-white/5 p-2.5 rounded-xl">
+                "• ${mod.resumeBullet}"
+              </p>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function copyResumeBullet(modId) {
+      const mod = CAREER_GUIDE_DATA.find(m => m.id === modId);
+      if (!mod) return;
+      copyTextToClipboard(`• ${mod.resumeBullet}`);
+      showToast(`Copied ${mod.id} resume bullet to clipboard!`, 'success');
+    }
+
+    // =========================================================================
+    // 12. EXPORT PROGRESS & FEEDBACK MODAL + CLIPBOARD HELPER
+    // =========================================================================
+    function openExportModal() {
+      const modal = document.getElementById('export-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      updateExportPreview();
+    }
+
+    function closeExportModal() {
+      const modal = document.getElementById('export-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function updateExportPreview() {
+      const stats = computeStats();
+      const name = document.getElementById('export-student-name').value.trim() || 'Anonymous Practitioner';
+      const cohort = document.getElementById('export-cohort').value.trim() || 'Self-Paced / General';
+      const notes = document.getElementById('export-notes').value.trim() || 'None provided.';
+      const timestamp = new Date().toISOString();
+
+      const solvedLabIds = LABS_DATA.filter(l => appState.labsProgress[l.id]?.completed).map(l => l.id);
+
+      const report = [
+        '====================================================================',
+        'TECH CAREER LAB: CYBER, DATA & IT FOUNDATIONS (v1.1)',
+        'COMPLETION & PRACTICUM TELEMETRY REPORT',
+        '====================================================================',
+        `Timestamp (UTC):      ${timestamp}`,
+        `Student Name:         ${name}`,
+        `Section / Cohort:     ${cohort}`,
+        `Current Rank:         ${stats.rank}`,
+        `Total XP Earned:      ${stats.xp} / 4,650 XP`,
+        `Overall Completion:   ${stats.totalCompleted} / ${stats.totalItems} Activities`,
+        '--------------------------------------------------------------------',
+        `1. Incident & Ticket Labs:    ${stats.labsDone} / ${LABS_DATA.length} Solved (+150 XP ea)`,
+        `   Solved Lab IDs:            ${solvedLabIds.length ? solvedLabIds.join(', ') : 'None yet'}`,
+        `2. CLI & SQL Sandbox Drills:  ${stats.sbxDone} / ${SANDBOX_DATA.length} Solved (+100 XP ea)`,
+        `   Solved Sandbox IDs:        ${appState.sandboxSolved.length ? appState.sandboxSolved.join(', ') : 'None yet'}`,
+        `3. Flashcards Mastered:       ${stats.cardsDone} / ${FLASHCARDS_DATA.length} Mastered (+25 XP ea)`,
+        '--------------------------------------------------------------------',
+        'STUDENT REFLECTION / INSTRUCTOR NOTES:',
+        notes,
+        '===================================================================='
+      ].join('\n');
+
+      document.getElementById('export-preview-box').value = report;
+    }
+
+    function copyTextToClipboard(text) {
+      const temp = document.createElement('textarea');
+      temp.value = text;
+      temp.style.position = 'fixed';
+      temp.style.opacity = '0';
+      document.body.appendChild(temp);
+      temp.select();
+      try {
+        document.execCommand('copy');
+      } catch (e) {
+        console.warn('Copy fallback failed', e);
+      }
+      document.body.removeChild(temp);
+    }
+
+    function copyExportSummary() {
+      const text = document.getElementById('export-preview-box').value;
+      copyTextToClipboard(text);
+      showToast('Completion report copied to clipboard!', 'success');
+    }
+
+    function downloadExportTxt() {
+      const text = document.getElementById('export-preview-box').value;
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const dateStr = new Date().toISOString().slice(0, 10);
+      a.href = url;
+      a.download = `TechCareerLab_Progress_${dateStr}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Downloaded timestamped .txt summary!', 'success');
+    }
+
+    let resetConfirmPending = false;
+    let resetConfirmTimer = null;
+
+    function resetAllProgress() {
+      const btn = document.getElementById('reset-progress-btn');
+      if (!resetConfirmPending) {
+        resetConfirmPending = true;
+        if (btn) btn.textContent = 'Click again to confirm reset';
+        showToast('Click "Reset Local Progress" again within 4s to clear all XP & progress.', 'warn');
+        resetConfirmTimer = setTimeout(() => {
+          resetConfirmPending = false;
+          if (btn) btn.textContent = 'Reset Local Progress';
+        }, 4000);
+        return;
+      }
+
+      clearTimeout(resetConfirmTimer);
+      resetConfirmPending = false;
+      if (btn) btn.textContent = 'Reset Local Progress';
+
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (e) {
+        console.warn('Unable to clear localStorage:', e);
+      }
+      appState.labsProgress = {};
+      appState.sandboxSolved = [];
+      appState.flashMastered = [];
+      saveState();
+      renderAllViews();
+      showToast('All local progress has been reset.', 'warn');
+    }
+    window.resetAllProgress = resetAllProgress;
+
+    // =========================================================================
+    // 13. INITIALIZATION ON WINDOW LOAD
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      setTrackFilter('ALL');
+      switchTab('labs');
+    });
+  </script>
+</body>
+</html>
