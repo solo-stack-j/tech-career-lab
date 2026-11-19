@@ -263,7 +263,7 @@
       </div>
 
       <!-- Scenario Cards Grid -->
-      <div id="labs-container" class="grid grid-cols-1 gap-6"></div>
+      <div id="labs-container" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"></div>
     </section>
 
     <!-- =================================================================== -->
@@ -1483,7 +1483,7 @@ corp-domain.com   MX preference = 20, mail exchanger = mx2-us.securemail-gateway
         title: "Linux SSH Brute-Force Log Hunt",
         env: "RHEL 9 Bastion Host • /var/log/auth.log",
         prompt: 'Search `/var/log/auth.log` using `grep` to extract all `"Failed password"` SSH authentication events.',
-        chips: ["grep", '"Failed password"', "/var/log/auth.log", "| wc -l"],
+        chips: ["grep", '\"Failed password\"', "/var/log/auth.log", "| wc -l"],
         solution: 'grep "Failed password" /var/log/auth.log',
         validate: (cmd) => /^grep\s+["']Failed password["']\s+\/var\/log\/auth\.log(\s+.*)?$/i.test(cmd.trim()),
         hint: 'Pass `"Failed password"` and `/var/log/auth.log` to `grep`.',
@@ -1655,6 +1655,7 @@ Successfully flushed the DNS Resolver Cache.`
       trackFilter: 'ALL',
       activeTab: 'labs',
       labStatusFilter: 'ALL',
+      activeLabId: 'CYBER-01',
       // Tracks user progress per lab: { "CYBER-01": { currentStage: 0, completed: false, answers: {} } }
       labsProgress: {},
       // Tracks solved sandbox IDs: ["SBX-01", ...]
@@ -1805,6 +1806,11 @@ Successfully flushed the DNS Resolver Cache.`
         appState.activeSandboxId = filteredSbx[0].id;
       }
 
+      // Ensure active lab item matches filter
+      if (filteredLabs.length > 0 && !filteredLabs.some(l => l.id === appState.activeLabId)) {
+        appState.activeLabId = filteredLabs[0].id;
+      }
+
       // Reset flashcard order to filtered set
       appState.flashOrder = filteredCards.map(c => FLASHCARDS_DATA.findIndex(orig => orig.id === c.id));
       appState.flashIndex = 0;
@@ -1869,65 +1875,110 @@ Successfully flushed the DNS Resolver Cache.`
       }
 
       if (list.length === 0) {
-        container.innerHTML = `<div class="p-8 rounded-2xl border theme-card text-center theme-muted text-sm">No labs match the selected track and status filter.</div>`;
+        container.innerHTML = `<div class="lg:col-span-12 p-8 rounded-2xl border theme-card text-center theme-muted text-sm">No labs match the selected track and status filter.</div>`;
         return;
       }
 
-      container.innerHTML = list.map(lab => {
-        const prog = appState.labsProgress[lab.id] || { currentStage: 0, completed: false, answers: {} };
-        const isCompleted = prog.completed;
+      if (!list.some(l => l.id === appState.activeLabId)) {
+        appState.activeLabId = list[0].id;
+      }
 
-        // Build 3-stage interactive stepper
-        const stagesHTML = lab.stages.map((stage, sIdx) => {
-          const savedAns = prog.answers[sIdx];
-          const isUnlocked = sIdx <= prog.currentStage || isCompleted;
+      const activeIdx = list.findIndex(l => l.id === appState.activeLabId);
+      const lab = list[activeIdx] || list[0];
+      const prog = appState.labsProgress[lab.id] || { currentStage: 0, completed: false, answers: {} };
+      const isCompleted = prog.completed;
 
-          if (!isUnlocked) {
+      // Left Sidebar: Compact Scenario Queue
+      const queueHTML = `
+        <div class="lg:col-span-4 space-y-2.5 max-h-[760px] overflow-y-auto pr-1">
+          ${list.map(item => {
+            const itemDone = appState.labsProgress[item.id]?.completed;
+            const isActive = item.id === lab.id;
             return `
-              <div class="p-3.5 rounded-xl border theme-border opacity-55 flex items-center justify-between">
-                <span class="text-xs font-semibold">🔒 ${stage.label}</span>
-                <span class="text-[11px] font-mono theme-muted">Complete previous stage to unlock</span>
-              </div>
+              <button onclick="selectActiveLab('${item.id}')"
+                class="w-full text-left p-3.5 rounded-xl border transition cursor-pointer flex items-center justify-between gap-3 ${isActive ? 'border-cyber bg-cyber/10 shadow-sm' : 'theme-card hover:border-cyber/40'}">
+                <div class="space-y-1 min-w-0">
+                  <div class="flex items-center gap-2">
+                    ${getTrackBadgeHTML(item.track)}
+                    <span class="font-mono text-xs font-bold">${item.id}</span>
+                  </div>
+                  <div class="text-xs sm:text-sm font-semibold truncate">${item.title}</div>
+                </div>
+                <span class="text-xs font-mono font-bold shrink-0 ${itemDone ? 'text-itops' : 'theme-muted'}">
+                  ${itemDone ? '✓ Done' : 'Open >'}
+                </span>
+              </button>
             `;
+          }).join('')}
+        </div>
+      `;
+
+      // Right Stage: Single Focused Incident / Ticket Workspace
+      const stagesHTML = lab.stages.map((stage, sIdx) => {
+        const savedAns = prog.answers[sIdx];
+        const isUnlocked = sIdx <= prog.currentStage || isCompleted;
+
+        if (!isUnlocked) {
+          return `
+            <div class="p-3.5 rounded-xl border theme-border opacity-55 flex items-center justify-between">
+              <span class="text-xs font-semibold">🔒 ${stage.label}</span>
+              <span class="text-[11px] font-mono theme-muted">Complete previous stage to unlock</span>
+            </div>
+          `;
+        }
+
+        const optionsHTML = stage.options.map((opt, oIdx) => {
+          const isChosen = savedAns && savedAns.selectedIdx === oIdx;
+          let btnClass = 'border theme-border theme-subcard hover:border-cyber/60';
+          if (isChosen) {
+            btnClass = opt.correct
+              ? 'border-itops bg-itops/15 text-emerald-950 dark:text-emerald-100'
+              : 'border-crimson bg-crimson/15 text-rose-950 dark:text-rose-100';
           }
 
-          const optionsHTML = stage.options.map((opt, oIdx) => {
-            const isChosen = savedAns && savedAns.selectedIdx === oIdx;
-            let btnClass = 'border theme-border theme-subcard hover:border-cyber/60';
-            if (isChosen) {
-              btnClass = opt.correct
-                ? 'border-itops bg-itops/15 text-emerald-950 dark:text-emerald-100'
-                : 'border-crimson bg-crimson/15 text-rose-950 dark:text-rose-100';
-            }
-
-            return `
-              <button onclick="answerLabStage('${lab.id}', ${sIdx}, ${oIdx})"
-                class="w-full text-left p-3 rounded-xl border text-xs sm:text-sm transition cursor-pointer flex items-start gap-2.5 ${btnClass}">
-                <span class="font-mono font-bold mt-0.5 shrink-0">${String.fromCharCode(65 + oIdx)}.</span>
-                <span class="flex-1">${opt.text}</span>
-              </button>
-              ${isChosen ? `
-                <div class="mt-1.5 mb-2 px-3 py-2 rounded-lg text-xs font-medium ${opt.correct ? 'bg-itops/15 text-itops border border-itops/30' : 'bg-crimson/15 text-crimson border border-crimson/30'}">
-                  ${opt.correct ? '✅ ' : '⚠️ '} ${opt.feedback}
-                </div>
-              ` : ''}
-            `;
-          }).join('');
-
           return `
-            <div class="p-4 rounded-xl border theme-border theme-card space-y-2.5">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold uppercase tracking-wider text-cyber">${stage.label}</span>
-                ${savedAns?.correct ? '<span class="text-xs font-bold text-itops">✓ Stage Cleared</span>' : ''}
+            <button onclick="answerLabStage('${lab.id}', ${sIdx}, ${oIdx})"
+              class="w-full text-left p-3 rounded-xl border text-xs sm:text-sm transition cursor-pointer flex items-start gap-2.5 ${btnClass}">
+              <span class="font-mono font-bold mt-0.5 shrink-0">${String.fromCharCode(65 + oIdx)}.</span>
+              <span class="flex-1">${opt.text}</span>
+            </button>
+            ${isChosen ? `
+              <div class="mt-1.5 mb-2 px-3 py-2 rounded-lg text-xs font-medium ${opt.correct ? 'bg-itops/15 text-itops border border-itops/30' : 'bg-crimson/15 text-crimson border border-crimson/30'}">
+                ${opt.correct ? '✅ ' : '⚠️ '} ${opt.feedback}
               </div>
-              <p class="text-xs sm:text-sm font-semibold">${stage.question}</p>
-              <div class="space-y-2 pt-1">${optionsHTML}</div>
-            </div>
+            ` : ''}
           `;
         }).join('');
 
         return `
+          <div class="p-4 rounded-xl border theme-border theme-card space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-cyber">${stage.label}</span>
+              ${savedAns?.correct ? '<span class="text-xs font-bold text-itops">✓ Stage Cleared</span>' : ''}
+            </div>
+            <p class="text-xs sm:text-sm font-semibold">${stage.question}</p>
+            <div class="space-y-2 pt-1">${optionsHTML}</div>
+          </div>
+        `;
+      }).join('');
+
+      const prevLab = list[(activeIdx - 1 + list.length) % list.length];
+      const nextLab = list[(activeIdx + 1) % list.length];
+
+      const detailHTML = `
+        <div class="lg:col-span-8">
           <article class="rounded-2xl border ${isCompleted ? 'border-itops/60' : 'theme-border'} theme-card p-5 sm:p-6 shadow-sm space-y-4">
+            <!-- Top Prev/Next Bar -->
+            <div class="flex items-center justify-between border-b theme-border pb-3 text-xs">
+              <button onclick="selectActiveLab('${prevLab.id}')" class="px-3 py-1.5 rounded-lg border theme-border theme-subcard hover:border-cyber font-semibold cursor-pointer">
+                &larr; Prev (${prevLab.id})
+              </button>
+              <span class="font-mono theme-muted">Scenario ${activeIdx + 1} of ${list.length}</span>
+              <button onclick="selectActiveLab('${nextLab.id}')" class="px-3 py-1.5 rounded-lg border theme-border theme-subcard hover:border-cyber font-semibold cursor-pointer">
+                Next (${nextLab.id}) &rarr;
+              </button>
+            </div>
+
             <!-- Card Header Metadata -->
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="flex flex-wrap items-center gap-2">
@@ -1980,8 +2031,15 @@ Successfully flushed the DNS Resolver Cache.`
               ${stagesHTML}
             </div>
           </article>
-        `;
-      }).join('');
+        </div>
+      `;
+
+      container.innerHTML = queueHTML + detailHTML;
+    }
+
+    function selectActiveLab(labId) {
+      appState.activeLabId = labId;
+      renderLabs();
     }
 
     function toggleFieldGuide(labId) {
